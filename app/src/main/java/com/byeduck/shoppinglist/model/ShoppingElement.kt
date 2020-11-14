@@ -1,18 +1,18 @@
 package com.byeduck.shoppinglist.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "list_elements")
 data class ShoppingElement(
-    val id: Long,
-    val listId: Long,
+    var listId: Long,
     var text: String,
     var price: Double,
-    var count: Int,
-    var isChecked: Boolean
+    var count: Int = 1,
+    var isChecked: Boolean = false
 ) {
 
-    companion object {
-        fun fromModel(model: ShoppingElementModel) = ShoppingElement(
-            model.id, model.listId, model.text, model.price, model.count, model.isChecked
-        )
-    }
+    @PrimaryKey(autoGenerate = true)
+    var id: Long = 0L
 
 }

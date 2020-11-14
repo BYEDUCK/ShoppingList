@@ -1,17 +1,24 @@
 package com.byeduck.shoppinglist.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.Relation
 import java.util.*
 
+@Entity(tableName = "shopping_lists")
 data class ShoppingList(
-    val id: Long,
-    val elements: List<ShoppingElement>,
-    val createdAt: Date,
-    var updatedAt: Date,
-    var name: String
+        var name: String,
+        var createdAt: Date = Date(),
+        var updatedAt: Date = Date()
 ) {
-    companion object {
-        fun fromModel(model: ShoppingListModel) = ShoppingList(
-            model.id, model.listElements.map { ShoppingElement.fromModel(it) }, model.createdAt, model.updatedAt, model.name
-        )
-    }
+
+    @PrimaryKey(autoGenerate = true)
+    var id: Long = 0L
+
+    @Relation(parentColumn = "id", entityColumn = "listId")
+    var listElements: List<ShoppingElement> = emptyList()
+
+    fun getDoneElementsCount() = listElements.count { it.isChecked }
+
+    fun getElementsCount() = listElements.size
 }
