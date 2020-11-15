@@ -4,15 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.byeduck.shoppinglist.model.ShoppingElement
+import com.byeduck.shoppinglist.model.ShoppingElementModel
 
 @Dao
 interface ShoppingElementDao {
 
     @Query("SELECT * FROM list_elements WHERE listId = :listId")
-    fun getForListId(listId: Long): LiveData<List<ShoppingElement>>
+    fun getForListId(listId: Long): LiveData<List<ShoppingElementModel>>
 
     @Insert
-    fun insert(shoppingElement: ShoppingElement)
+    fun insert(shoppingElement: ShoppingElementModel)
 
 }
