@@ -1,5 +1,6 @@
-package com.byeduck.shoppinglist.model
+package com.byeduck.shoppinglist.model.view
 
+import com.byeduck.shoppinglist.model.ShoppingListModel
 import java.util.*
 
 data class ShoppingList(

@@ -1,5 +1,6 @@
 package com.byeduck.shoppinglist.db.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -9,7 +10,7 @@ import com.byeduck.shoppinglist.model.ShoppingListModel
 interface ShoppingListDao {
 
     @Query("SELECT * FROM shopping_lists")
-    fun getAll(): List<ShoppingListModel>
+    fun getAll(): LiveData<List<ShoppingListModel>>
 
     @Insert
     fun insert(shoppingList: ShoppingListModel)

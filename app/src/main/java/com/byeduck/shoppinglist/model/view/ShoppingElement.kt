@@ -1,4 +1,6 @@
-package com.byeduck.shoppinglist.model
+package com.byeduck.shoppinglist.model.view
+
+import com.byeduck.shoppinglist.model.ShoppingElementModel
 
 data class ShoppingElement(
     val id: Long,
