@@ -20,12 +20,12 @@ class ShoppingListDetailActivity : AppCompatActivity() {
         shoppingListDetailViewModel = ViewModelProvider(
             this, ShoppingListsDetailViewModelFactory(this.application, listId)
         ).get(ShoppingListsDetailViewModel::class.java)
-        binding.shoppingListElementsRecycleView.adapter = ShoppingListElementsAdapter(this)
+        binding.shoppingListElementsRecycleView.adapter = ShoppingListElementsAdapter()
         binding.shoppingListElementsRecycleView.layoutManager = LinearLayoutManager(this)
         binding.shoppingListElementsRecycleView.addItemDecoration(
             DividerItemDecoration(
                 this,
-                DividerItemDecoration.HORIZONTAL
+                DividerItemDecoration.VERTICAL
             )
         )
         shoppingListDetailViewModel.shoppingList.observe(this, Observer { list ->

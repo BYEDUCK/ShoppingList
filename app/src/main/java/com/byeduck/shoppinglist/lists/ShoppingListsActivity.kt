@@ -24,7 +24,7 @@ class ShoppingListsActivity : AppCompatActivity() {
         binding.shoppingListsRecycleView.addItemDecoration(
             DividerItemDecoration(
                 this,
-                DividerItemDecoration.HORIZONTAL
+                DividerItemDecoration.VERTICAL
             )
         )
         shoppingListsViewModel.shoppingLists.observe(this, Observer { all ->

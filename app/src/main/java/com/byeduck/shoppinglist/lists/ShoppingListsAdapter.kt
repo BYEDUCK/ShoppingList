@@ -3,11 +3,9 @@ package com.byeduck.shoppinglist.lists
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.byeduck.shoppinglist.R
+import com.byeduck.shoppinglist.databinding.ListelemShoppingListBinding
 import com.byeduck.shoppinglist.detail.ShoppingListDetailActivity
 import com.byeduck.shoppinglist.model.view.ShoppingListWithElements
 
@@ -16,23 +14,20 @@ class ShoppingListsAdapter(private val context: Context) :
 
     private var shoppingLists: List<ShoppingListWithElements> = emptyList()
 
-    inner class ShoppingListViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val shoppingListNameLbl: TextView = view.findViewById(R.id.shoppingListNameLbl)
-        val shoppingListCreatedAtLbl: TextView = view.findViewById(R.id.shoppingListCreatedAtLbl)
-    }
+    inner class ShoppingListViewHolder(val binding: ListelemShoppingListBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShoppingListViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.listelem_shopping_list, parent, false)
-        return ShoppingListViewHolder(view)
+        val inflater = LayoutInflater.from(parent.context)
+        return ShoppingListViewHolder(ListelemShoppingListBinding.inflate(inflater))
     }
 
     override fun onBindViewHolder(holder: ShoppingListViewHolder, position: Int) {
         val current = shoppingLists[position]
-        holder.shoppingListNameLbl.text = current.listName
-        holder.shoppingListCreatedAtLbl.text = current.createdAt.toString()
+        holder.binding.shoppingListNameLbl.text = current.listName
+        holder.binding.shoppingListCreatedAtLbl.text = current.createdAt.toString()
 
-        holder.view.setOnClickListener {
+        holder.binding.root.setOnClickListener {
             val intent = Intent(context, ShoppingListDetailActivity::class.java)
             intent.putExtra("listId", current.listId)
             context.startActivity(intent)
