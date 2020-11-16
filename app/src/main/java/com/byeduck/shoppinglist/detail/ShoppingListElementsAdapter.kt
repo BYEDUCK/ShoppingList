@@ -19,7 +19,8 @@ class ShoppingListElementsAdapter :
         viewType: Int
     ): ShoppingListElementsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return ShoppingListElementsViewHolder(ListelemShoppingElemBinding.inflate(inflater))
+        val binding = ListelemShoppingElemBinding.inflate(inflater, parent, false)
+        return ShoppingListElementsViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ShoppingListElementsViewHolder, position: Int) {
@@ -27,6 +28,7 @@ class ShoppingListElementsAdapter :
         holder.binding.listElemTextLbl.text = current.text
         holder.binding.listElemCountLbl.text = current.count.toString()
         holder.binding.listElemPriceLbl.text = current.price.toString()
+        holder.binding.listElemCheck.isChecked = current.isChecked
     }
 
     override fun getItemCount(): Int = shoppingElements.size
