@@ -17,4 +17,9 @@ class ShoppingListRepository(private val shoppingListDao: ShoppingListDao) {
     fun insert(request: CreateShoppingListRequest) {
         shoppingListDao.insert(ShoppingListModel(request.name))
     }
+
+    fun getById(id: Long): LiveData<ShoppingListWithElements> {
+        val model = shoppingListDao.getById(id)
+        return Transformations.map(model) { ShoppingListWithElements.fromModel(it) }
+    }
 }

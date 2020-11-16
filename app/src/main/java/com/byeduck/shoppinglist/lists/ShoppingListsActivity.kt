@@ -6,8 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.byeduck.shoppinglist.R
+import com.byeduck.shoppinglist.databinding.ActivityShoppingListsBinding
 
 class ShoppingListsActivity : AppCompatActivity() {
 
@@ -15,16 +14,29 @@ class ShoppingListsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_shopping_lists)
-        val recycleView = this.findViewById<RecyclerView>(R.id.shoppingListsRecycleView)
+        val binding = ActivityShoppingListsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         shoppingListsViewModel = ViewModelProvider(
             this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.application)
         ).get(ShoppingListsViewModel::class.java)
-        recycleView.adapter = ShoppingListsAdapter(this, shoppingListsViewModel)
-        recycleView.layoutManager = LinearLayoutManager(this)
-        recycleView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL))
+        binding.shoppingListsRecycleView.adapter = ShoppingListsAdapter(this)
+        binding.shoppingListsRecycleView.layoutManager = LinearLayoutManager(this)
+        binding.shoppingListsRecycleView.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                DividerItemDecoration.HORIZONTAL
+            )
+        )
         shoppingListsViewModel.shoppingLists.observe(this, Observer { all ->
-            all?.let { (recycleView.adapter as ShoppingListsAdapter).setShoppingLists(it) }
+            all?.let {
+                (binding.shoppingListsRecycleView.adapter as ShoppingListsAdapter).setShoppingLists(
+                    it
+                )
+            }
         })
+        binding.addShoppingListBtn.setOnClickListener {
+            // TEMPORARY
+            shoppingListsViewModel.addShoppingList("test")
+        }
     }
 }

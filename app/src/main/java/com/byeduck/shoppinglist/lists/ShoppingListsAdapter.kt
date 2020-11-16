@@ -1,22 +1,24 @@
 package com.byeduck.shoppinglist.lists
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.byeduck.shoppinglist.R
+import com.byeduck.shoppinglist.detail.ShoppingListDetailActivity
 import com.byeduck.shoppinglist.model.view.ShoppingListWithElements
 
-class ShoppingListsAdapter(val context: Context, val viewModel: ShoppingListsViewModel) :
+class ShoppingListsAdapter(private val context: Context) :
     RecyclerView.Adapter<ShoppingListsAdapter.ShoppingListViewHolder>() {
 
     private var shoppingLists: List<ShoppingListWithElements> = emptyList()
 
     inner class ShoppingListViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val nameTextView: TextView = view.findViewById(R.id.shoppingListNameLbl)
-        val createdAtTextView: TextView = view.findViewById(R.id.shoppingListCreatedAtLbl)
+        val shoppingListNameLbl: TextView = view.findViewById(R.id.shoppingListNameLbl)
+        val shoppingListCreatedAtLbl: TextView = view.findViewById(R.id.shoppingListCreatedAtLbl)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShoppingListViewHolder {
@@ -27,11 +29,13 @@ class ShoppingListsAdapter(val context: Context, val viewModel: ShoppingListsVie
 
     override fun onBindViewHolder(holder: ShoppingListViewHolder, position: Int) {
         val current = shoppingLists[position]
-        holder.nameTextView.text = current.listName
-        holder.createdAtTextView.text = current.createdAt.toString()
+        holder.shoppingListNameLbl.text = current.listName
+        holder.shoppingListCreatedAtLbl.text = current.createdAt.toString()
 
         holder.view.setOnClickListener {
-            //TODO: create intent and go to list detail activity
+            val intent = Intent(context, ShoppingListDetailActivity::class.java)
+            intent.putExtra("listId", current.listId)
+            context.startActivity(intent)
         }
     }
 

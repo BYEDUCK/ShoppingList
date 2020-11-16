@@ -15,6 +15,10 @@ interface ShoppingListDao {
     @Query("SELECT * FROM shopping_lists")
     fun getAll(): LiveData<List<ShoppingListWithElementsModel>>
 
+    @Transaction
+    @Query("SELECT * FROM shopping_lists WHERE id=:id")
+    fun getById(id: Long): LiveData<ShoppingListWithElementsModel>
+
     @Insert
     fun insert(shoppingList: ShoppingListModel)
 
