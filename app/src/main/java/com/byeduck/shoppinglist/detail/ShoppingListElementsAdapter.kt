@@ -2,12 +2,16 @@ package com.byeduck.shoppinglist.detail
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.byeduck.shoppinglist.databinding.ListelemShoppingElemBinding
+import com.byeduck.shoppinglist.detail.edit.ShoppingListElementActionsFragment
 import com.byeduck.shoppinglist.model.view.ShoppingElement
 
-class ShoppingListElementsAdapter :
-    RecyclerView.Adapter<ShoppingListElementsAdapter.ShoppingListElementsViewHolder>() {
+class ShoppingListElementsAdapter(
+    private val fragmentManager: FragmentManager,
+    private val deleteCallback: (shoppingElement: ShoppingElement) -> Unit
+) : RecyclerView.Adapter<ShoppingListElementsAdapter.ShoppingListElementsViewHolder>() {
 
     private var shoppingElements: List<ShoppingElement> = emptyList()
 
@@ -29,6 +33,13 @@ class ShoppingListElementsAdapter :
         holder.binding.listElemCountLbl.text = current.count.toString()
         holder.binding.listElemPriceLbl.text = current.price.toString()
         holder.binding.listElemCheck.isChecked = current.isChecked
+        holder.binding.root.setOnLongClickListener {
+            val dialog = ShoppingListElementActionsFragment {
+                deleteCallback(shoppingElements[position])
+            }
+            dialog.show(fragmentManager, "dialog")
+            return@setOnLongClickListener true
+        }
     }
 
     override fun getItemCount(): Int = shoppingElements.size

@@ -20,7 +20,10 @@ class ShoppingListDetailActivity : AppCompatActivity() {
         shoppingListDetailViewModel = ViewModelProvider(
             this, ShoppingListsDetailViewModelFactory(this.application, listId)
         ).get(ShoppingListsDetailViewModel::class.java)
-        binding.shoppingListElementsRecycleView.adapter = ShoppingListElementsAdapter()
+        val adapter = ShoppingListElementsAdapter(supportFragmentManager) {
+            shoppingListDetailViewModel.removeShoppingElement(it)
+        }
+        binding.shoppingListElementsRecycleView.adapter = adapter
         binding.shoppingListElementsRecycleView.layoutManager = LinearLayoutManager(this)
         binding.shoppingListElementsRecycleView.addItemDecoration(
             DividerItemDecoration(

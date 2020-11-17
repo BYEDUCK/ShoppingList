@@ -2,6 +2,7 @@ package com.byeduck.shoppinglist.db.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.byeduck.shoppinglist.model.ShoppingElementModel
@@ -14,5 +15,8 @@ interface ShoppingElementDao {
 
     @Insert
     fun insert(shoppingElement: ShoppingElementModel)
+
+    @Delete
+    fun removeById(shoppingElement: ShoppingElementModel)
 
 }
