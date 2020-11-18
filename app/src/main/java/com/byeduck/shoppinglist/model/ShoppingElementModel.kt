@@ -15,4 +15,9 @@ data class ShoppingElementModel(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0L
 
+    constructor(listId: Long, text: String, price: Double, count: Int, isChecked: Boolean, id: Long)
+            : this(listId, text, price, count, isChecked) {
+        this.id = id
+    }
+
 }

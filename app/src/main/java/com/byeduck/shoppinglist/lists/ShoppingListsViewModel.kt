@@ -28,4 +28,10 @@ class ShoppingListsViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    fun deleteShoppingList(shoppingListWithElements: ShoppingListWithElements) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.remove(shoppingListWithElements)
+        }
+    }
+
 }
