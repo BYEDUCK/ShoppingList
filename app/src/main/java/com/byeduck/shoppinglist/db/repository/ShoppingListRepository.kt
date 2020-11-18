@@ -22,4 +22,15 @@ class ShoppingListRepository(private val shoppingListDao: ShoppingListDao) {
         val model = shoppingListDao.getById(id)
         return Transformations.map(model) { ShoppingListWithElements.fromModel(it) }
     }
+
+    fun remove(shoppingListWithElements: ShoppingListWithElements) {
+        shoppingListDao.delete(
+            ShoppingListModel(
+                shoppingListWithElements.listName,
+                shoppingListWithElements.createdAt,
+                shoppingListWithElements.updatedAt,
+                shoppingListWithElements.listId
+            )
+        )
+    }
 }

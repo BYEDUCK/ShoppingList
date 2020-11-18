@@ -2,7 +2,6 @@ package com.byeduck.shoppinglist.lists
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,16 +9,17 @@ import com.byeduck.shoppinglist.databinding.ActivityShoppingListsBinding
 
 class ShoppingListsActivity : AppCompatActivity() {
 
-    private lateinit var shoppingListsViewModel: ShoppingListsViewModel
+    private lateinit var viewModel: ShoppingListsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityShoppingListsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        shoppingListsViewModel = ViewModelProvider(
+        viewModel = ViewModelProvider(
             this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.application)
         ).get(ShoppingListsViewModel::class.java)
-        binding.shoppingListsRecycleView.adapter = ShoppingListsAdapter(this)
+        binding.shoppingListsRecycleView.adapter =
+            ShoppingListsAdapter(this, viewModel, supportFragmentManager)
         binding.shoppingListsRecycleView.layoutManager = LinearLayoutManager(this)
         binding.shoppingListsRecycleView.addItemDecoration(
             DividerItemDecoration(
@@ -27,7 +27,7 @@ class ShoppingListsActivity : AppCompatActivity() {
                 DividerItemDecoration.VERTICAL
             )
         )
-        shoppingListsViewModel.shoppingLists.observe(this, Observer { all ->
+        viewModel.shoppingLists.observe(this, { all ->
             all?.let {
                 (binding.shoppingListsRecycleView.adapter as ShoppingListsAdapter).setShoppingLists(
                     it
@@ -36,7 +36,7 @@ class ShoppingListsActivity : AppCompatActivity() {
         })
         binding.addShoppingListBtn.setOnClickListener {
             // TEMPORARY
-            shoppingListsViewModel.addShoppingList("test")
+            viewModel.addShoppingList("test")
         }
     }
 }

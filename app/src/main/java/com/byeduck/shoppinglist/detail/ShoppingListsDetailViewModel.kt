@@ -34,7 +34,7 @@ class ShoppingListsDetailViewModel(application: Application, private val listId:
         }
     }
 
-    fun removeShoppingElement(shoppingElement: ShoppingElement) {
+    fun deleteShoppingElement(shoppingElement: ShoppingElement) {
         viewModelScope.launch(Dispatchers.IO) {
             elementRepository.remove(shoppingElement)
         }

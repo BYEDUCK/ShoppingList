@@ -11,10 +11,10 @@ class ShoppingElementRepository(private val shoppingElementDao: ShoppingElementD
         ShoppingElementModel(request.listId, request.text, request.price)
     )
 
-    fun remove(shoppingElement: ShoppingElement) = shoppingElementDao.removeById(
+    fun remove(shoppingElement: ShoppingElement) = shoppingElementDao.delete(
         ShoppingElementModel(
             shoppingElement.listId, shoppingElement.text, shoppingElement.price,
-            shoppingElement.count, shoppingElement.isChecked
+            shoppingElement.count, shoppingElement.isChecked, shoppingElement.id
         )
     )
 

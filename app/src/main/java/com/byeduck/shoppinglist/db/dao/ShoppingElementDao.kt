@@ -17,6 +17,6 @@ interface ShoppingElementDao {
     fun insert(shoppingElement: ShoppingElementModel)
 
     @Delete
-    fun removeById(shoppingElement: ShoppingElementModel)
+    fun delete(shoppingElement: ShoppingElementModel)
 
 }

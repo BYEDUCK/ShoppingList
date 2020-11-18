@@ -4,13 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.byeduck.shoppinglist.action.Action
+import com.byeduck.shoppinglist.action.ShoppingActionsDialogFragment
 import com.byeduck.shoppinglist.databinding.ListelemShoppingElemBinding
-import com.byeduck.shoppinglist.detail.edit.ShoppingListElementActionsFragment
 import com.byeduck.shoppinglist.model.view.ShoppingElement
 
 class ShoppingListElementsAdapter(
-    private val fragmentManager: FragmentManager,
-    private val deleteCallback: (shoppingElement: ShoppingElement) -> Unit
+    private val viewModel: ShoppingListsDetailViewModel,
+    private val fragmentManager: FragmentManager
 ) : RecyclerView.Adapter<ShoppingListElementsAdapter.ShoppingListElementsViewHolder>() {
 
     private var shoppingElements: List<ShoppingElement> = emptyList()
@@ -34,11 +35,14 @@ class ShoppingListElementsAdapter(
         holder.binding.listElemPriceLbl.text = current.price.toString()
         holder.binding.listElemCheck.isChecked = current.isChecked
         holder.binding.root.setOnLongClickListener {
-            val dialog = ShoppingListElementActionsFragment {
-                deleteCallback(shoppingElements[position])
+            val dialog = ShoppingActionsDialogFragment { action ->
+                when (action) {
+                    Action.DELETE -> viewModel.deleteShoppingElement(shoppingElements[position])
+                    Action.EDIT -> TODO()
+                }
             }
             dialog.show(fragmentManager, "dialog")
-            return@setOnLongClickListener true
+            true
         }
     }
 
