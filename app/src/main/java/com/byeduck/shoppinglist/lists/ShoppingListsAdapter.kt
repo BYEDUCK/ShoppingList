@@ -10,7 +10,7 @@ import com.byeduck.shoppinglist.action.Action
 import com.byeduck.shoppinglist.action.ShoppingActionsDialogFragment
 import com.byeduck.shoppinglist.databinding.ListelemShoppingListBinding
 import com.byeduck.shoppinglist.detail.ShoppingListDetailActivity
-import com.byeduck.shoppinglist.model.view.ShoppingListWithElements
+import com.byeduck.shoppinglist.model.view.ShoppingList
 
 class ShoppingListsAdapter(
     private val context: Context,
@@ -19,7 +19,7 @@ class ShoppingListsAdapter(
 ) :
     RecyclerView.Adapter<ShoppingListsAdapter.ShoppingListViewHolder>() {
 
-    private var shoppingLists: List<ShoppingListWithElements> = emptyList()
+    private var shoppingLists: List<ShoppingList> = emptyList()
 
     inner class ShoppingListViewHolder(val binding: ListelemShoppingListBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -32,17 +32,17 @@ class ShoppingListsAdapter(
 
     override fun onBindViewHolder(holder: ShoppingListViewHolder, position: Int) {
         val current = shoppingLists[position]
-        holder.binding.shoppingListNameLbl.text = current.listName
+        holder.binding.shoppingListNameLbl.text = current.name
         holder.binding.shoppingListCreatedAtLbl.text = current.createdAt.toString()
         holder.binding.root.setOnClickListener {
             val intent = Intent(context, ShoppingListDetailActivity::class.java)
-            intent.putExtra("listId", current.listId)
+            intent.putExtra("listId", current.id)
             context.startActivity(intent)
         }
         holder.binding.root.setOnLongClickListener {
             val dialog = ShoppingActionsDialogFragment { action ->
                 when (action) {
-                    Action.DELETE -> viewModel.deleteShoppingList(shoppingLists[position])
+                    Action.DELETE -> viewModel.deleteShoppingListById(current.id)
                     Action.EDIT -> TODO()
                 }
             }
@@ -53,7 +53,7 @@ class ShoppingListsAdapter(
 
     override fun getItemCount(): Int = shoppingLists.size
 
-    internal fun setShoppingLists(shoppingLists: List<ShoppingListWithElements>) {
+    internal fun setShoppingLists(shoppingLists: List<ShoppingList>) {
         this.shoppingLists = shoppingLists.sortedBy { it.updatedAt }
         notifyDataSetChanged()
     }

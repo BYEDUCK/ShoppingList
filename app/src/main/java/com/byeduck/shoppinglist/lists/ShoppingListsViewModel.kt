@@ -7,14 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.byeduck.shoppinglist.db.ShoppingDB
 import com.byeduck.shoppinglist.db.repository.ShoppingListRepository
 import com.byeduck.shoppinglist.model.request.CreateShoppingListRequest
-import com.byeduck.shoppinglist.model.view.ShoppingListWithElements
+import com.byeduck.shoppinglist.model.view.ShoppingList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ShoppingListsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: ShoppingListRepository
-    val shoppingLists: LiveData<List<ShoppingListWithElements>>
+    val shoppingLists: LiveData<List<ShoppingList>>
 
     init {
         val shoppingListDao = ShoppingDB.getDatabase(application).shoppingListDao()
@@ -28,9 +28,9 @@ class ShoppingListsViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
-    fun deleteShoppingList(shoppingListWithElements: ShoppingListWithElements) {
+    fun deleteShoppingListById(id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.remove(shoppingListWithElements)
+            repository.deleteById(id)
         }
     }
 

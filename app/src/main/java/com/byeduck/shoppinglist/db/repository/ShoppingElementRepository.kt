@@ -18,4 +18,7 @@ class ShoppingElementRepository(private val shoppingElementDao: ShoppingElementD
         )
     )
 
+    fun setIsCheckedById(isChecked: Boolean, id: Long) =
+        shoppingElementDao.setCheckedById(isChecked, id)
+
 }

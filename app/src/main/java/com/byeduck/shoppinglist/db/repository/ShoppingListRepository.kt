@@ -5,13 +5,14 @@ import androidx.lifecycle.Transformations
 import com.byeduck.shoppinglist.db.dao.ShoppingListDao
 import com.byeduck.shoppinglist.model.ShoppingListModel
 import com.byeduck.shoppinglist.model.request.CreateShoppingListRequest
+import com.byeduck.shoppinglist.model.view.ShoppingList
 import com.byeduck.shoppinglist.model.view.ShoppingListWithElements
 
 class ShoppingListRepository(private val shoppingListDao: ShoppingListDao) {
 
-    val allLists: LiveData<List<ShoppingListWithElements>> =
+    val allLists: LiveData<List<ShoppingList>> =
         Transformations.map(shoppingListDao.getAll()) { lists ->
-            lists.map { ShoppingListWithElements.fromModel(it) }
+            lists.map { ShoppingList.fromModel(it) }
         }
 
     fun insert(request: CreateShoppingListRequest) {
@@ -19,18 +20,9 @@ class ShoppingListRepository(private val shoppingListDao: ShoppingListDao) {
     }
 
     fun getById(id: Long): LiveData<ShoppingListWithElements> {
-        val model = shoppingListDao.getById(id)
+        val model = shoppingListDao.getByIdWithElements(id)
         return Transformations.map(model) { ShoppingListWithElements.fromModel(it) }
     }
 
-    fun remove(shoppingListWithElements: ShoppingListWithElements) {
-        shoppingListDao.delete(
-            ShoppingListModel(
-                shoppingListWithElements.listName,
-                shoppingListWithElements.createdAt,
-                shoppingListWithElements.updatedAt,
-                shoppingListWithElements.listId
-            )
-        )
-    }
+    fun deleteById(id: Long) = shoppingListDao.deleteById(id)
 }

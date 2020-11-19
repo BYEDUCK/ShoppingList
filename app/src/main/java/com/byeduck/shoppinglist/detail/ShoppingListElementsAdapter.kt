@@ -2,6 +2,7 @@ package com.byeduck.shoppinglist.detail
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.CheckBox
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.byeduck.shoppinglist.action.Action
@@ -34,10 +35,14 @@ class ShoppingListElementsAdapter(
         holder.binding.listElemCountLbl.text = current.count.toString()
         holder.binding.listElemPriceLbl.text = current.price.toString()
         holder.binding.listElemCheck.isChecked = current.isChecked
+        holder.binding.listElemCheck.setOnClickListener {
+            val checkBox = it as CheckBox
+            viewModel.checkShoppingElementById(checkBox.isChecked, current.id)
+        }
         holder.binding.root.setOnLongClickListener {
             val dialog = ShoppingActionsDialogFragment { action ->
                 when (action) {
-                    Action.DELETE -> viewModel.deleteShoppingElement(shoppingElements[position])
+                    Action.DELETE -> viewModel.deleteShoppingElement(current)
                     Action.EDIT -> TODO()
                 }
             }

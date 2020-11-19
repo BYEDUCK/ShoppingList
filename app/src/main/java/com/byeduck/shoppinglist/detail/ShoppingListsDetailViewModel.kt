@@ -40,4 +40,10 @@ class ShoppingListsDetailViewModel(application: Application, private val listId:
         }
     }
 
+    fun checkShoppingElementById(isChecked: Boolean, id: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            elementRepository.setIsCheckedById(isChecked, id)
+        }
+    }
+
 }

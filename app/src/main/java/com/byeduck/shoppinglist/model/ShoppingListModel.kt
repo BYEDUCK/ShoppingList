@@ -14,8 +14,4 @@ data class ShoppingListModel(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0L
 
-    constructor(name: String, createdAt: Date, updatedAt: Date, id: Long)
-            : this(name, createdAt, updatedAt) {
-        this.id = id
-    }
 }
