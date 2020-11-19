@@ -29,7 +29,7 @@ class ShoppingListRepository(private val shoppingListDao: ShoppingListDao) {
 
     fun edit(shoppingList: ShoppingList) = shoppingListDao.update(
         ShoppingListModel(
-            shoppingList.id, shoppingList.name, shoppingList.createdAt, Date()
+            shoppingList.id, shoppingList.name, Date(), shoppingList.createdAt
         )
     )
 }
