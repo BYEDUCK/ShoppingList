@@ -11,14 +11,15 @@ class ShoppingElementRepository(private val shoppingElementDao: ShoppingElementD
         ShoppingElementModel(request.listId, request.text, request.price)
     )
 
-    fun remove(shoppingElement: ShoppingElement) = shoppingElementDao.delete(
+    fun deleteById(elementId: Long) = shoppingElementDao.deleteById(elementId)
+
+    fun setIsCheckedById(isChecked: Boolean, id: Long) =
+        shoppingElementDao.setCheckedById(isChecked, id)
+
+    fun update(shoppingElement: ShoppingElement) = shoppingElementDao.update(
         ShoppingElementModel(
             shoppingElement.listId, shoppingElement.text, shoppingElement.price,
             shoppingElement.count, shoppingElement.isChecked, shoppingElement.id
         )
     )
-
-    fun setIsCheckedById(isChecked: Boolean, id: Long) =
-        shoppingElementDao.setCheckedById(isChecked, id)
-
 }

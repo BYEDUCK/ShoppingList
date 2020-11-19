@@ -42,7 +42,7 @@ class ShoppingListElementsAdapter(
         holder.binding.root.setOnLongClickListener {
             val dialog = ShoppingActionsDialogFragment { action ->
                 when (action) {
-                    Action.DELETE -> viewModel.deleteShoppingElement(current)
+                    Action.DELETE -> viewModel.deleteShoppingElementById(current.id)
                     Action.EDIT -> TODO()
                 }
             }
