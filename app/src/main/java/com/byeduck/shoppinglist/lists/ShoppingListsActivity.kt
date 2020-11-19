@@ -1,5 +1,6 @@
 package com.byeduck.shoppinglist.lists
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -35,8 +36,8 @@ class ShoppingListsActivity : AppCompatActivity() {
             }
         })
         binding.addShoppingListBtn.setOnClickListener {
-            // TEMPORARY
-            viewModel.addShoppingList("test")
+            val intent = Intent(applicationContext, AddEditShoppingListActivity::class.java)
+            startActivity(intent)
         }
     }
 }

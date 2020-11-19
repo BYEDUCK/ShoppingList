@@ -10,7 +10,6 @@ import com.byeduck.shoppinglist.action.Action
 import com.byeduck.shoppinglist.action.ShoppingActionsDialogFragment
 import com.byeduck.shoppinglist.databinding.ListelemShoppingListBinding
 import com.byeduck.shoppinglist.detail.ShoppingListDetailActivity
-import com.byeduck.shoppinglist.lists.edit.EditShoppingListActivity
 import com.byeduck.shoppinglist.model.view.ShoppingList
 import com.google.gson.Gson
 
@@ -46,7 +45,7 @@ class ShoppingListsAdapter(
                 when (action) {
                     Action.DELETE -> viewModel.deleteShoppingListById(current.id)
                     Action.EDIT -> {
-                        val intent = Intent(context, EditShoppingListActivity::class.java)
+                        val intent = Intent(context, AddEditShoppingListActivity::class.java)
                         intent.putExtra("serializedList", Gson().toJson(current))
                         context.startActivity(intent)
                     }
