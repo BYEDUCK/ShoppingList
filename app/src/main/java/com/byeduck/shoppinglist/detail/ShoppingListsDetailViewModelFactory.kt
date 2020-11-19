@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 
 class ShoppingListsDetailViewModelFactory(
     private val application: Application,
-    private val listId: Long
+    private val listId: Long = -1L
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")

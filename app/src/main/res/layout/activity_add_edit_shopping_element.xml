@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".detail.AddEditShoppingElementActivity">
+
+    <TextView
+        android:id="@+id/shoppingElemTxtEditLbl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:labelFor="@id/shoppingElemTxtEdit"
+        android:text="@string/element_text"
+        android:textAlignment="center" />
+
+    <EditText
+        android:id="@+id/shoppingElemTxtEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:autofillHints="Shopping list name"
+        android:inputType="text"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/shoppingElemPriceLbl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:labelFor="@id/shoppingElemPriceEdit"
+        android:text="@string/price"
+        android:textAlignment="center" />
+
+    <EditText
+        android:id="@+id/shoppingElemPriceEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:autofillHints="Element price"
+        android:inputType="numberDecimal"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/shoppingElemCountLbl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:labelFor="@id/shoppingElemCountEdit"
+        android:text="@string/count"
+        android:textAlignment="center" />
+
+    <EditText
+        android:id="@+id/shoppingElemCountEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:autofillHints="Elements count"
+        android:inputType="number"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/shoppingElemEditSaveBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/save" />
+
+</LinearLayout>

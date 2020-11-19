@@ -1,11 +1,13 @@
 package com.byeduck.shoppinglist.detail
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.byeduck.shoppinglist.databinding.ActivityShoppingListDetailBinding
+import com.byeduck.shoppinglist.lists.ShoppingListsActivity
 
 class ShoppingListDetailActivity : AppCompatActivity() {
 
@@ -19,7 +21,7 @@ class ShoppingListDetailActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(
             this, ShoppingListsDetailViewModelFactory(this.application, listId)
         ).get(ShoppingListsDetailViewModel::class.java)
-        val adapter = ShoppingListElementsAdapter(viewModel, supportFragmentManager)
+        val adapter = ShoppingListElementsAdapter(this, viewModel, supportFragmentManager)
         binding.shoppingListElementsRecycleView.adapter = adapter
         binding.shoppingListElementsRecycleView.layoutManager = LinearLayoutManager(this)
         binding.shoppingListElementsRecycleView.addItemDecoration(
@@ -36,7 +38,14 @@ class ShoppingListDetailActivity : AppCompatActivity() {
             }
         })
         binding.addShoppingElementBtn.setOnClickListener {
-            viewModel.addShoppingElement("Test element", 2.5)
+            val intent = Intent(applicationContext, AddEditShoppingElementActivity::class.java)
+            intent.putExtra("listId", listId)
+            startActivity(intent)
         }
+    }
+
+    override fun onBackPressed() {
+        val backIntent = Intent(this, ShoppingListsActivity::class.java)
+        startActivity(backIntent)
     }
 }

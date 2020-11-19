@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".lists.AddEditShoppingListActivity">
 
     <TextView
@@ -12,10 +12,7 @@
         android:layout_height="wrap_content"
         android:labelFor="@id/shoppingListNameEditTxt"
         android:text="@string/list_name"
-        android:textAlignment="center"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/shoppingListNameEditTxt" />
+        android:textAlignment="center" />
 
     <EditText
         android:id="@+id/shoppingListNameEditTxt"
@@ -23,21 +20,13 @@
         android:layout_height="wrap_content"
         android:autofillHints="Shopping list name"
         android:inputType="text"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toLeftOf="@id/shoppingListNameEditLbl"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textAlignment="center" />
 
     <Button
         android:id="@+id/shoppingListEditSaveBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/save"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shoppingListNameEditTxt" />
+        android:layout_gravity="center_horizontal" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

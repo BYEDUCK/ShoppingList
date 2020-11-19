@@ -1,5 +1,7 @@
 package com.byeduck.shoppinglist.detail
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CheckBox
@@ -9,8 +11,10 @@ import com.byeduck.shoppinglist.action.Action
 import com.byeduck.shoppinglist.action.ShoppingActionsDialogFragment
 import com.byeduck.shoppinglist.databinding.ListelemShoppingElemBinding
 import com.byeduck.shoppinglist.model.view.ShoppingElement
+import com.google.gson.Gson
 
 class ShoppingListElementsAdapter(
+    private val context: Context,
     private val viewModel: ShoppingListsDetailViewModel,
     private val fragmentManager: FragmentManager
 ) : RecyclerView.Adapter<ShoppingListElementsAdapter.ShoppingListElementsViewHolder>() {
@@ -43,7 +47,11 @@ class ShoppingListElementsAdapter(
             val dialog = ShoppingActionsDialogFragment { action ->
                 when (action) {
                     Action.DELETE -> viewModel.deleteShoppingElementById(current.id)
-                    Action.EDIT -> TODO()
+                    Action.EDIT -> {
+                        val intent = Intent(context, AddEditShoppingElementActivity::class.java)
+                        intent.putExtra("serializedElem", Gson().toJson(current))
+                        context.startActivity(intent)
+                    }
                 }
             }
             dialog.show(fragmentManager, "dialog")

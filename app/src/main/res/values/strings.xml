@@ -4,4 +4,7 @@
     <string name="your_shopping_lists">Your shopping lists</string>
     <string name="list_name">List name</string>
     <string name="save">ZAPISZ</string>
+    <string name="price">Price</string>
+    <string name="count">Count</string>
+    <string name="element_text">Element text</string>
 </resources>

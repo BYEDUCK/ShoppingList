@@ -8,7 +8,7 @@ import com.byeduck.shoppinglist.model.view.ShoppingElement
 class ShoppingElementRepository(private val shoppingElementDao: ShoppingElementDao) {
 
     fun insert(request: CreateShoppingElementRequest) = shoppingElementDao.insert(
-        ShoppingElementModel(request.listId, request.text, request.price)
+        ShoppingElementModel(request.listId, request.text, request.price, request.count)
     )
 
     fun deleteById(elementId: Long) = shoppingElementDao.deleteById(elementId)

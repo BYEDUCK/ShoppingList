@@ -22,7 +22,11 @@ class ShoppingListRepository(private val shoppingListDao: ShoppingListDao) {
 
     fun getById(id: Long): LiveData<ShoppingListWithElements> {
         val model = shoppingListDao.getByIdWithElements(id)
-        return Transformations.map(model) { ShoppingListWithElements.fromModel(it) }
+        return Transformations.map(model) { list ->
+            list?.let {
+                ShoppingListWithElements.fromModel(it)
+            }
+        }
     }
 
     fun deleteById(id: Long) = shoppingListDao.deleteById(id)

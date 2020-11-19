@@ -8,6 +8,7 @@ import com.byeduck.shoppinglist.db.ShoppingDB
 import com.byeduck.shoppinglist.db.repository.ShoppingElementRepository
 import com.byeduck.shoppinglist.db.repository.ShoppingListRepository
 import com.byeduck.shoppinglist.model.request.CreateShoppingElementRequest
+import com.byeduck.shoppinglist.model.view.ShoppingElement
 import com.byeduck.shoppinglist.model.view.ShoppingListWithElements
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,6 +43,12 @@ class ShoppingListsDetailViewModel(application: Application, private val listId:
     fun checkShoppingElementById(isChecked: Boolean, id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             elementRepository.setIsCheckedById(isChecked, id)
+        }
+    }
+
+    fun updateShoppingElement(shoppingElement: ShoppingElement) {
+        viewModelScope.launch(Dispatchers.IO) {
+            elementRepository.update(shoppingElement)
         }
     }
 

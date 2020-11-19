@@ -11,7 +11,6 @@ import com.google.gson.Gson
 class AddEditShoppingListActivity : AppCompatActivity() {
 
     private lateinit var viewModel: ShoppingListsViewModel
-    private lateinit var shoppingList: ShoppingList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +28,7 @@ class AddEditShoppingListActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         } else {
-            shoppingList = Gson().fromJson(shoppingListJson, ShoppingList::class.java)
+            val shoppingList = Gson().fromJson(shoppingListJson, ShoppingList::class.java)
             binding.shoppingListNameEditTxt.setText(shoppingList.name)
             binding.shoppingListEditSaveBtn.setOnClickListener {
                 shoppingList.name = binding.shoppingListNameEditTxt.text.toString()

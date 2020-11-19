@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShoppingList">
-        <activity android:name="com.byeduck.shoppinglist.lists.AddEditShoppingListActivity"></activity>
+        <activity android:name=".detail.AddEditShoppingElementActivity"></activity>
+        <activity android:name=".lists.AddEditShoppingListActivity" />
         <activity android:name=".detail.ShoppingListDetailActivity" />
         <activity android:name=".lists.ShoppingListsActivity" />
         <activity android:name=".MainActivity">
