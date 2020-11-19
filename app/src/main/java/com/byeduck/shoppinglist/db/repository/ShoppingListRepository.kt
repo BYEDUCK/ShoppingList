@@ -7,6 +7,7 @@ import com.byeduck.shoppinglist.model.ShoppingListModel
 import com.byeduck.shoppinglist.model.request.CreateShoppingListRequest
 import com.byeduck.shoppinglist.model.view.ShoppingList
 import com.byeduck.shoppinglist.model.view.ShoppingListWithElements
+import java.util.*
 
 class ShoppingListRepository(private val shoppingListDao: ShoppingListDao) {
 
@@ -25,4 +26,10 @@ class ShoppingListRepository(private val shoppingListDao: ShoppingListDao) {
     }
 
     fun deleteById(id: Long) = shoppingListDao.deleteById(id)
+
+    fun edit(shoppingList: ShoppingList) = shoppingListDao.update(
+        ShoppingListModel(
+            shoppingList.id, shoppingList.name, shoppingList.createdAt, Date()
+        )
+    )
 }

@@ -1,10 +1,7 @@
 package com.byeduck.shoppinglist.db.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import com.byeduck.shoppinglist.model.ShoppingListModel
 import com.byeduck.shoppinglist.model.ShoppingListWithElementsModel
 
@@ -25,5 +22,8 @@ interface ShoppingListDao {
     @Transaction
     @Query("DELETE FROM shopping_lists WHERE id=:id")
     fun deleteById(id: Long)
+
+    @Update
+    fun update(shoppingListModel: ShoppingListModel)
 
 }

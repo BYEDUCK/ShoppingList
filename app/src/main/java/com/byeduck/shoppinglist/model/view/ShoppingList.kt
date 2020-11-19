@@ -5,9 +5,9 @@ import java.util.*
 
 data class ShoppingList(
     val id: Long,
-    val name: String,
-    val createdAt: Date,
-    val updatedAt: Date
+    var name: String,
+    var createdAt: Date,
+    var updatedAt: Date
 ) {
 
     companion object {

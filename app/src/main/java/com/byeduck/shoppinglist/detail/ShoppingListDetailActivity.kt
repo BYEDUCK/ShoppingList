@@ -15,7 +15,7 @@ class ShoppingListDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityShoppingListDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val listId = intent.extras?.get("listId") as Long
+        val listId = intent.extras?.getLong("listId", -1L) ?: -1L
         viewModel = ViewModelProvider(
             this, ShoppingListsDetailViewModelFactory(this.application, listId)
         ).get(ShoppingListsDetailViewModel::class.java)

@@ -34,4 +34,10 @@ class ShoppingListsViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    fun editShoppingList(shoppingList: ShoppingList) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.edit(shoppingList)
+        }
+    }
+
 }

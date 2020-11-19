@@ -10,7 +10,9 @@ import com.byeduck.shoppinglist.action.Action
 import com.byeduck.shoppinglist.action.ShoppingActionsDialogFragment
 import com.byeduck.shoppinglist.databinding.ListelemShoppingListBinding
 import com.byeduck.shoppinglist.detail.ShoppingListDetailActivity
+import com.byeduck.shoppinglist.lists.edit.EditShoppingListActivity
 import com.byeduck.shoppinglist.model.view.ShoppingList
+import com.google.gson.Gson
 
 class ShoppingListsAdapter(
     private val context: Context,
@@ -33,7 +35,7 @@ class ShoppingListsAdapter(
     override fun onBindViewHolder(holder: ShoppingListViewHolder, position: Int) {
         val current = shoppingLists[position]
         holder.binding.shoppingListNameLbl.text = current.name
-        holder.binding.shoppingListCreatedAtLbl.text = current.createdAt.toString()
+        holder.binding.shoppingListCreatedAtLbl.text = current.updatedAt.toString()
         holder.binding.root.setOnClickListener {
             val intent = Intent(context, ShoppingListDetailActivity::class.java)
             intent.putExtra("listId", current.id)
@@ -43,7 +45,11 @@ class ShoppingListsAdapter(
             val dialog = ShoppingActionsDialogFragment { action ->
                 when (action) {
                     Action.DELETE -> viewModel.deleteShoppingListById(current.id)
-                    Action.EDIT -> TODO()
+                    Action.EDIT -> {
+                        val intent = Intent(context, EditShoppingListActivity::class.java)
+                        intent.putExtra("serializedList", Gson().toJson(current))
+                        context.startActivity(intent)
+                    }
                 }
             }
             dialog.show(fragmentManager, "dialog")
@@ -54,7 +60,7 @@ class ShoppingListsAdapter(
     override fun getItemCount(): Int = shoppingLists.size
 
     internal fun setShoppingLists(shoppingLists: List<ShoppingList>) {
-        this.shoppingLists = shoppingLists.sortedBy { it.updatedAt }
+        this.shoppingLists = shoppingLists.sortedByDescending { it.updatedAt }
         notifyDataSetChanged()
     }
 

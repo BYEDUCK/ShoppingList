@@ -14,4 +14,12 @@ data class ShoppingListModel(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0L
 
+    constructor(id: Long, name: String, updatedAt: Date, createdAt: Date) : this(
+        name,
+        createdAt,
+        updatedAt
+    ) {
+        this.id = id
+    }
+
 }
