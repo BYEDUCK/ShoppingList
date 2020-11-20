@@ -22,14 +22,19 @@ class AddEditShoppingElementActivity : AppCompatActivity() {
             this, ShoppingListsDetailViewModelFactory(this.application, listId)
         ).get(ShoppingListsDetailViewModel::class.java)
         val completedIntent = Intent(this, ShoppingListDetailActivity::class.java)
+        val pickerValues = generateNumberPickerDisplayValues()
+        binding.shoppingElemCountEdit.minValue = 0
+        binding.shoppingElemCountEdit.maxValue = 99
+        binding.shoppingElemCountEdit.displayedValues =
+            pickerValues.map { it.toString() }.toTypedArray()
         if (shoppingElemJson.isNullOrEmpty()) {
-            binding.shoppingElemCountEdit.setText("1")
+            binding.shoppingElemCountEdit.value = 0
             binding.shoppingElemPriceEdit.setText("0.0")
             binding.shoppingElemEditSaveBtn.setOnClickListener {
                 viewModel.addShoppingElement(
                     binding.shoppingElemTxtEdit.text.toString(),
                     binding.shoppingElemPriceEdit.text.toString().toDouble(),
-                    binding.shoppingElemCountEdit.text.toString().toInt()
+                    pickerValues[binding.shoppingElemCountEdit.value]
                 )
                 completedIntent.putExtra("listId", listId)
                 startActivity(completedIntent)
@@ -38,7 +43,7 @@ class AddEditShoppingElementActivity : AppCompatActivity() {
             val shoppingElement: ShoppingElement =
                 Gson().fromJson(shoppingElemJson, ShoppingElement::class.java)
             binding.shoppingElemTxtEdit.setText(shoppingElement.text)
-            binding.shoppingElemCountEdit.setText(shoppingElement.count.toString())
+            binding.shoppingElemCountEdit.value = shoppingElement.count - 1
             binding.shoppingElemPriceEdit.setText(shoppingElement.price.toString())
             binding.shoppingElemEditSaveBtn.setOnClickListener {
                 viewModel.updateShoppingElement(
@@ -46,7 +51,7 @@ class AddEditShoppingElementActivity : AppCompatActivity() {
                         shoppingElement.id, shoppingElement.listId,
                         binding.shoppingElemTxtEdit.text.toString(),
                         binding.shoppingElemPriceEdit.text.toString().toDouble(),
-                        binding.shoppingElemCountEdit.text.toString().toInt(),
+                        pickerValues[binding.shoppingElemCountEdit.value],
                         shoppingElement.isChecked
                     )
                 )
@@ -54,5 +59,13 @@ class AddEditShoppingElementActivity : AppCompatActivity() {
                 startActivity(completedIntent)
             }
         }
+    }
+
+    private fun generateNumberPickerDisplayValues(): IntArray {
+        val res = IntArray(100)
+        for (i in 0 until 100) {
+            res[i] = i + 1
+        }
+        return res
     }
 }

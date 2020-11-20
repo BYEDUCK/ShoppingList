@@ -49,14 +49,13 @@
         android:text="@string/count"
         android:textAlignment="center" />
 
-    <EditText
+    <NumberPicker
         android:id="@+id/shoppingElemCountEdit"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="20dp"
-        android:autofillHints="Elements count"
-        android:inputType="number"
-        android:textAlignment="center" />
+        android:autofillHints="Elements count" />
 
     <Button
         android:id="@+id/shoppingElemEditSaveBtn"
