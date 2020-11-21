@@ -23,13 +23,14 @@ class ShoppingListDetailActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(
             this, ShoppingListsDetailViewModelFactory(this.application, listId)
         ).get(ShoppingListsDetailViewModel::class.java)
-        val elemColor =
-            getSharedPreferences(PREF_FILE_NAME, MODE_PRIVATE).getInt("elemColor", R.color.white)
+        val sharedPreferences = getSharedPreferences(PREF_FILE_NAME, MODE_PRIVATE)
+        val elemColor = sharedPreferences.getInt("elemColor", R.color.white)
+        val elemTxtColor = sharedPreferences.getInt("elemTxtColor", R.color.black)
         val adapter = ShoppingListElementsAdapter(
             this,
             viewModel,
             supportFragmentManager,
-            getColor(elemColor)
+            getColor(elemColor), getColor(elemTxtColor)
         )
         binding.shoppingListElementsRecycleView.adapter = adapter
         binding.shoppingListElementsRecycleView.layoutManager = LinearLayoutManager(this)

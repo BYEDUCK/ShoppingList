@@ -22,10 +22,13 @@ class ShoppingListsActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(
             this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.application)
         ).get(ShoppingListsViewModel::class.java)
-        val listColor =
-            getSharedPreferences(PREF_FILE_NAME, MODE_PRIVATE).getInt("listColor", R.color.white)
+        val sharedPreferences = getSharedPreferences(PREF_FILE_NAME, MODE_PRIVATE)
+        val listColor = sharedPreferences.getInt("listColor", R.color.white)
+        val listTxtColor = sharedPreferences.getInt("listTxtColor", R.color.black)
         binding.shoppingListsRecycleView.adapter =
-            ShoppingListsAdapter(this, viewModel, supportFragmentManager, getColor(listColor))
+            ShoppingListsAdapter(
+                this, viewModel, supportFragmentManager, getColor(listColor), getColor(listTxtColor)
+            )
         binding.shoppingListsRecycleView.layoutManager = LinearLayoutManager(this)
         binding.shoppingListsRecycleView.addItemDecoration(
             DividerItemDecoration(

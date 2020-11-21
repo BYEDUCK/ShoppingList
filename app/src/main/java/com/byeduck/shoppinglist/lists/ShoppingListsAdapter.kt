@@ -17,7 +17,8 @@ class ShoppingListsAdapter(
     private val context: Context,
     private val viewModel: ShoppingListsViewModel,
     private val fragmentManager: FragmentManager,
-    private val listColor: Int
+    private val listColor: Int,
+    private val listTxtColor: Int
 ) :
     RecyclerView.Adapter<ShoppingListsAdapter.ShoppingListViewHolder>() {
 
@@ -30,6 +31,8 @@ class ShoppingListsAdapter(
         val inflater = LayoutInflater.from(parent.context)
         val binding = ListelemShoppingListBinding.inflate(inflater, parent, false)
         binding.root.setBackgroundColor(listColor)
+        binding.shoppingListCreatedAtLbl.setTextColor(listTxtColor)
+        binding.shoppingListNameLbl.setTextColor(listTxtColor)
         return ShoppingListViewHolder(binding)
     }
 

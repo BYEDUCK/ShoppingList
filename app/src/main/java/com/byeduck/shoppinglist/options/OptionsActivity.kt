@@ -20,14 +20,15 @@ class OptionsActivity : AppCompatActivity() {
     private val availableColorOptions = arrayOf(
         Color("white", R.color.white),
         Color("red", R.color.red),
-        Color("green", R.color.green)
+        Color("green", R.color.green),
+        Color("black", R.color.black, R.color.white)
     )
 
     private val indexByColor = HashMap<Int, Int>()
 
     init {
         for ((idx, color) in availableColorOptions.withIndex()) {
-            indexByColor[color.value] = idx
+            indexByColor[color.background] = idx
         }
     }
 
@@ -50,7 +51,8 @@ class OptionsActivity : AppCompatActivity() {
                     position: Int,
                     id: Long
                 ) {
-                    intPreferencesCache["listColor"] = availableColorOptions[position].value
+                    intPreferencesCache["listColor"] = availableColorOptions[position].background
+                    intPreferencesCache["listTxtColor"] = availableColorOptions[position].text
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -66,7 +68,8 @@ class OptionsActivity : AppCompatActivity() {
                     position: Int,
                     id: Long
                 ) {
-                    intPreferencesCache["elemColor"] = availableColorOptions[position].value
+                    intPreferencesCache["elemColor"] = availableColorOptions[position].background
+                    intPreferencesCache["elemTxtColor"] = availableColorOptions[position].text
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -80,7 +83,7 @@ class OptionsActivity : AppCompatActivity() {
         this, android.R.layout.simple_spinner_dropdown_item, availableColorOptions.map { it.name }
     )
 
-    inner class Color(val name: String, val value: Int)
+    inner class Color(val name: String, val background: Int, val text: Int = R.color.black)
 
     fun saveSettings(ignored: View) {
         val preferencesEditor = sharedPreferences.edit()

@@ -17,7 +17,8 @@ class ShoppingListElementsAdapter(
     private val context: Context,
     private val viewModel: ShoppingListsDetailViewModel,
     private val fragmentManager: FragmentManager,
-    private val elemColor: Int
+    private val elemColor: Int,
+    private val elemTxtColor: Int
 ) : RecyclerView.Adapter<ShoppingListElementsAdapter.ShoppingListElementsViewHolder>() {
 
     private var shoppingElements: List<ShoppingElement> = emptyList()
@@ -32,6 +33,9 @@ class ShoppingListElementsAdapter(
         val inflater = LayoutInflater.from(parent.context)
         val binding = ListelemShoppingElemBinding.inflate(inflater, parent, false)
         binding.root.setBackgroundColor(elemColor)
+        binding.listElemPriceLbl.setTextColor(elemTxtColor)
+        binding.listElemCountLbl.setTextColor(elemTxtColor)
+        binding.listElemTextLbl.setTextColor(elemTxtColor)
         return ShoppingListElementsViewHolder(binding)
     }
 
