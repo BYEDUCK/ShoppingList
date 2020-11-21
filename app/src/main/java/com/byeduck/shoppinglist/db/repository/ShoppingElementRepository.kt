@@ -7,16 +7,16 @@ import com.byeduck.shoppinglist.model.view.ShoppingElement
 
 class ShoppingElementRepository(private val shoppingElementDao: ShoppingElementDao) {
 
-    fun insert(request: CreateShoppingElementRequest) = shoppingElementDao.insert(
+    suspend fun insert(request: CreateShoppingElementRequest) = shoppingElementDao.insert(
         ShoppingElementModel(request.listId, request.text, request.price, request.count)
     )
 
-    fun deleteById(elementId: Long) = shoppingElementDao.deleteById(elementId)
+    suspend fun deleteById(elementId: Long) = shoppingElementDao.deleteById(elementId)
 
-    fun setIsCheckedById(isChecked: Boolean, id: Long) =
+    suspend fun setIsCheckedById(isChecked: Boolean, id: Long) =
         shoppingElementDao.setCheckedById(isChecked, id)
 
-    fun update(shoppingElement: ShoppingElement) = shoppingElementDao.update(
+    suspend fun update(shoppingElement: ShoppingElement) = shoppingElementDao.update(
         ShoppingElementModel(
             shoppingElement.listId, shoppingElement.text, shoppingElement.price,
             shoppingElement.count, shoppingElement.isChecked, shoppingElement.id

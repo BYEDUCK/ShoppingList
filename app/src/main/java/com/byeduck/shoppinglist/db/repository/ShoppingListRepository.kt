@@ -16,7 +16,7 @@ class ShoppingListRepository(private val shoppingListDao: ShoppingListDao) {
             lists.map { ShoppingList.fromModel(it) }
         }
 
-    fun insert(request: CreateShoppingListRequest) {
+    suspend fun insert(request: CreateShoppingListRequest) {
         shoppingListDao.insert(ShoppingListModel(request.name))
     }
 
@@ -29,11 +29,13 @@ class ShoppingListRepository(private val shoppingListDao: ShoppingListDao) {
         }
     }
 
-    fun deleteById(id: Long) = shoppingListDao.deleteById(id)
+    suspend fun deleteById(id: Long) = shoppingListDao.deleteById(id)
 
-    fun edit(shoppingList: ShoppingList) = shoppingListDao.update(
+    suspend fun edit(shoppingList: ShoppingList) = shoppingListDao.update(
         ShoppingListModel(
             shoppingList.id, shoppingList.name, Date(), shoppingList.createdAt
         )
     )
+
+    fun getAll() = shoppingListDao.getAllWithElements()
 }

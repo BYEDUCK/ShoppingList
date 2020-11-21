@@ -9,7 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShoppingList">
-        <activity android:name=".options.OptionsActivity"></activity>
+        <provider
+            android:name=".util.ShoppingListsContentProvider"
+            android:authorities="com.byeduck.shoppinglist.provider"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".options.OptionsActivity" />
         <activity android:name=".detail.AddEditShoppingElementActivity" />
         <activity android:name=".lists.AddEditShoppingListActivity" />
         <activity android:name=".detail.ShoppingListDetailActivity" />

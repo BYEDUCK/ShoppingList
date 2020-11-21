@@ -1,5 +1,6 @@
 package com.byeduck.shoppinglist.db.dao
 
+import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.byeduck.shoppinglist.model.ShoppingListModel
@@ -13,17 +14,21 @@ interface ShoppingListDao {
     fun getAll(): LiveData<List<ShoppingListModel>>
 
     @Transaction
+    @Query("SELECT * FROM shopping_lists")
+    fun getAllWithElements(): Cursor
+
+    @Transaction
     @Query("SELECT * FROM shopping_lists WHERE id=:id")
     fun getByIdWithElements(id: Long): LiveData<ShoppingListWithElementsModel>
 
     @Insert
-    fun insert(shoppingList: ShoppingListModel)
+    suspend fun insert(shoppingList: ShoppingListModel)
 
     @Transaction
     @Query("DELETE FROM shopping_lists WHERE id=:id")
-    fun deleteById(id: Long)
+    suspend fun deleteById(id: Long)
 
     @Update
-    fun update(shoppingListModel: ShoppingListModel)
+    suspend fun update(shoppingListModel: ShoppingListModel)
 
 }
