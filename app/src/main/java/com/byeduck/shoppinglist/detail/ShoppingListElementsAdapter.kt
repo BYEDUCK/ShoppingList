@@ -16,7 +16,8 @@ import com.google.gson.Gson
 class ShoppingListElementsAdapter(
     private val context: Context,
     private val viewModel: ShoppingListsDetailViewModel,
-    private val fragmentManager: FragmentManager
+    private val fragmentManager: FragmentManager,
+    private val elemColor: Int
 ) : RecyclerView.Adapter<ShoppingListElementsAdapter.ShoppingListElementsViewHolder>() {
 
     private var shoppingElements: List<ShoppingElement> = emptyList()
@@ -30,6 +31,7 @@ class ShoppingListElementsAdapter(
     ): ShoppingListElementsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ListelemShoppingElemBinding.inflate(inflater, parent, false)
+        binding.root.setBackgroundColor(elemColor)
         return ShoppingListElementsViewHolder(binding)
     }
 

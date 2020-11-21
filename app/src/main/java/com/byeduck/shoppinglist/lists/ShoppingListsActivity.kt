@@ -6,7 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.byeduck.shoppinglist.MainActivity
+import com.byeduck.shoppinglist.R
 import com.byeduck.shoppinglist.databinding.ActivityShoppingListsBinding
+import com.byeduck.shoppinglist.util.PREF_FILE_NAME
 
 class ShoppingListsActivity : AppCompatActivity() {
 
@@ -19,8 +22,10 @@ class ShoppingListsActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(
             this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.application)
         ).get(ShoppingListsViewModel::class.java)
+        val listColor =
+            getSharedPreferences(PREF_FILE_NAME, MODE_PRIVATE).getInt("listColor", R.color.white)
         binding.shoppingListsRecycleView.adapter =
-            ShoppingListsAdapter(this, viewModel, supportFragmentManager)
+            ShoppingListsAdapter(this, viewModel, supportFragmentManager, getColor(listColor))
         binding.shoppingListsRecycleView.layoutManager = LinearLayoutManager(this)
         binding.shoppingListsRecycleView.addItemDecoration(
             DividerItemDecoration(
@@ -39,5 +44,10 @@ class ShoppingListsActivity : AppCompatActivity() {
             val intent = Intent(applicationContext, AddEditShoppingListActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    override fun onBackPressed() {
+        val backToMainIntent = Intent(this, MainActivity::class.java)
+        startActivity(backToMainIntent)
     }
 }

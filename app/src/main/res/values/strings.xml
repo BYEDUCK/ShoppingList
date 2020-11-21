@@ -3,8 +3,12 @@
     <string name="add_shopping_list">Add shopping list</string>
     <string name="your_shopping_lists">Your shopping lists</string>
     <string name="list_name">List name</string>
-    <string name="save">ZAPISZ</string>
+    <string name="save">Save</string>
     <string name="price">Price</string>
     <string name="count">Count</string>
     <string name="element_text">Element text</string>
+    <string name="lists_color">Lists color</string>
+    <string name="list_elements_color">List elements color</string>
+    <string name="settings">Settings</string>
+    <string name="cancel">Cancel</string>
 </resources>
