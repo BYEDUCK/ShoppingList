@@ -2,6 +2,7 @@ package com.byeduck.shoppinglist.detail
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.byeduck.shoppinglist.databinding.ActivityAddEditShoppingElementBinding
@@ -37,6 +38,13 @@ class AddEditShoppingElementActivity : AppCompatActivity() {
                     pickerValues[binding.shoppingElemCountEdit.value]
                 )
                 completedIntent.putExtra("listId", listId)
+                val broadcastIntent = Intent("com.byeduck.shoppinglist.NOTI")
+                broadcastIntent.putExtra("listId", listId)
+                sendBroadcast(
+                    broadcastIntent,
+                    "com.byeduck.shoppinglist.permissions.SEND_RECEIVE_NOTI"
+                )
+                Log.v("Add/Edit Activity", "Broadcast sent. List id : $listId")
                 startActivity(completedIntent)
             }
         } else {
