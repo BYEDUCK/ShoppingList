@@ -7,11 +7,11 @@
         android:label="Shopping list notification permission group" />
 
     <permission
-        android:name="com.byeduck.shoppinglist.permissions.SEND_RECEIVE_NOTI"
+        android:name="com.byeduck.shoppinglist.permissions.SEND_NOTI"
         android:label="Send notifications from shopping list app"
         android:permissionGroup="com.byeduck.shoppinglist.permissions" />
 
-    <uses-permission android:name="com.byeduck.shoppinglist.permissions.SEND_RECEIVE_NOTI" />
+    <uses-permission android:name="com.byeduck.shoppinglist.permissions.SEND_NOTI" />
 
     <application
         android:allowBackup="true"
@@ -27,7 +27,11 @@
             android:exported="true" />
 
         <activity android:name=".options.OptionsActivity" />
-        <activity android:name=".detail.AddEditShoppingElementActivity" />
+        <activity android:name=".detail.AddEditShoppingElementActivity">
+            <intent-filter android:priority="999">
+                <action android:name="com.byeduck.shoppinglist.ADD_EDIT_LIST" />
+            </intent-filter>
+        </activity>
         <activity android:name=".lists.AddEditShoppingListActivity" />
         <activity android:name=".detail.ShoppingListDetailActivity" />
         <activity android:name=".lists.ShoppingListsActivity" />

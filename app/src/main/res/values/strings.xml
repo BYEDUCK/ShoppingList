@@ -11,4 +11,7 @@
     <string name="list_elements_color">List elements color</string>
     <string name="settings">Settings</string>
     <string name="cancel">Cancel</string>
+    <string name="notificationPackage">com.byeduck.shoppinglistnotificationprovider</string>
+    <string name="mainPackage">com.byeduck.shoppinglist</string>
+    <string name="broadcastReceiverClassName">ModificationEventReceiver</string>
 </resources>

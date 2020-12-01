@@ -12,6 +12,7 @@ import com.byeduck.shoppinglist.model.view.ShoppingElement
 import com.byeduck.shoppinglist.model.view.ShoppingListWithElements
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class ShoppingListsDetailViewModel(application: Application, private val listId: Long) :
     AndroidViewModel(application) {
@@ -28,11 +29,10 @@ class ShoppingListsDetailViewModel(application: Application, private val listId:
         shoppingList = listRepository.getById(listId)
     }
 
-    fun addShoppingElement(text: String, price: Double, count: Int = 1) {
-        viewModelScope.launch(Dispatchers.IO) {
+    fun addShoppingElement(text: String, price: Double, count: Int = 1) =
+        runBlocking(Dispatchers.IO) {
             elementRepository.insert(CreateShoppingElementRequest(listId, text, price, count))
         }
-    }
 
     fun deleteShoppingElementById(elementId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -50,6 +50,10 @@ class ShoppingListsDetailViewModel(application: Application, private val listId:
         viewModelScope.launch(Dispatchers.IO) {
             elementRepository.update(shoppingElement)
         }
+    }
+
+    fun getShoppingElementById(elementId: Long) = runBlocking(Dispatchers.IO) {
+        elementRepository.getById(elementId)
     }
 
 }

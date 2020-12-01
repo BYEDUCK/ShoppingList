@@ -22,4 +22,7 @@ class ShoppingElementRepository(private val shoppingElementDao: ShoppingElementD
             shoppingElement.count, shoppingElement.isChecked, shoppingElement.id
         )
     )
+
+    suspend fun getById(elementId: Long) =
+        ShoppingElement.fromModel(shoppingElementDao.getById(elementId))
 }
