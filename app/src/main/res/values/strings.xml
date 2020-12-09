@@ -14,4 +14,9 @@
     <string name="notificationPackage">com.byeduck.shoppinglistnotificationprovider</string>
     <string name="mainPackage">com.byeduck.shoppinglist</string>
     <string name="broadcastReceiverClassName">ModificationEventReceiver</string>
+    <string name="e_mail">e-mail</string>
+    <string name="password">password</string>
+    <string name="log_in">LOG IN</string>
+    <string name="sign_up">SIGN UP</string>
+    <string name="welcome">Welcome %s !</string>
 </resources>
