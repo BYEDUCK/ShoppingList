@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.CheckBox
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.byeduck.shoppinglist.action.Action
@@ -45,14 +44,14 @@ class ShoppingListElementsAdapter(
         holder.binding.listElemCountLbl.text = current.count.toString()
         holder.binding.listElemPriceLbl.text = current.price.toString()
         holder.binding.listElemCheck.isChecked = current.isChecked
-        holder.binding.listElemCheck.setOnClickListener {
-            val checkBox = it as CheckBox
-            viewModel.checkShoppingElementById(checkBox.isChecked, current.id)
-        }
+//        holder.binding.listElemCheck.setOnClickListener {
+//            val checkBox = it as CheckBox
+//            viewModel.checkShoppingElementById(checkBox.isChecked, current.id)
+//        }
         holder.binding.root.setOnLongClickListener {
             val dialog = ShoppingActionsDialogFragment { action ->
                 when (action) {
-                    Action.DELETE -> viewModel.deleteShoppingElementById(current.id)
+                    Action.DELETE -> TODO()// viewModel.deleteShoppingElementById(current.id)
                     Action.EDIT -> {
                         val intent = Intent(context, AddEditShoppingElementActivity::class.java)
                         intent.putExtra("serializedElem", Gson().toJson(current))

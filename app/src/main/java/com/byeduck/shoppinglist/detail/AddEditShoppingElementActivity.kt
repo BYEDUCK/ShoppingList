@@ -55,17 +55,17 @@ class AddEditShoppingElementActivity : AppCompatActivity() {
                 }
             initEditFields(shoppingElement.text, shoppingElement.price, shoppingElement.count)
             activityBinding.shoppingElemEditSaveBtn.setOnClickListener {
-                viewModel.updateShoppingElement(
-                    ShoppingElement(
-                        shoppingElement.id, shoppingElement.listId,
-                        activityBinding.shoppingElemTxtEdit.text.toString(),
-                        activityBinding.shoppingElemPriceEdit.text.toString().toDouble(),
-                        pickerValues[activityBinding.shoppingElemCountEdit.value],
-                        shoppingElement.isChecked
-                    )
-                )
-                completedIntent.putExtra("listId", shoppingElement.listId)
-                startActivity(completedIntent)
+//                viewModel.updateShoppingElement(
+//                    ShoppingElement(
+//                        shoppingElement.id, shoppingElement.listId,
+//                        activityBinding.shoppingElemTxtEdit.text.toString(),
+//                        activityBinding.shoppingElemPriceEdit.text.toString().toDouble(),
+//                        pickerValues[activityBinding.shoppingElemCountEdit.value],
+//                        shoppingElement.isChecked
+//                    )
+//                )
+//                completedIntent.putExtra("listId", shoppingElement.listId)
+//                startActivity(completedIntent)
             }
         }
     }

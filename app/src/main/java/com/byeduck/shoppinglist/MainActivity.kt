@@ -9,6 +9,7 @@ import com.byeduck.shoppinglist.databinding.ActivityMainBinding
 import com.byeduck.shoppinglist.lists.ShoppingListsActivity
 import com.byeduck.shoppinglist.login.LoggedInUser
 import com.byeduck.shoppinglist.login.LoginActivity
+import com.byeduck.shoppinglist.login.LoginService
 import com.byeduck.shoppinglist.options.OptionsActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.GlobalScope
@@ -23,9 +24,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         try {
-            user = LoggedInUser.getUser()
+            user = LoginService.getUser()
             val binding = ActivityMainBinding.inflate(layoutInflater)
-            binding.userNameTxt.text = getString(R.string.welcome, user.userName)
+            binding.userNameTxt.text = getString(R.string.welcome, user.name)
             setContentView(binding.root)
         } catch (e: Exception) {
             val goToLoginIntent = Intent(applicationContext, LoginActivity::class.java)

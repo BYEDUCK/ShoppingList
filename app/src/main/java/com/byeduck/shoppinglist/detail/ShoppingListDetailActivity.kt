@@ -40,13 +40,13 @@ class ShoppingListDetailActivity : AppCompatActivity() {
                 DividerItemDecoration.VERTICAL
             )
         )
-        viewModel.shoppingList.observe(this, { list ->
-            list?.let {
-                binding.shoppingListNameLbl.text = it.listName
-                (binding.shoppingListElementsRecycleView.adapter as ShoppingListElementsAdapter)
-                    .setShoppingElements(it.elements)
-            }
-        })
+//        viewModel.shoppingList.observe(this, { list ->
+//            list?.let {
+//                binding.shoppingListNameLbl.text = it.listName
+//                (binding.shoppingListElementsRecycleView.adapter as ShoppingListElementsAdapter)
+//                    .setShoppingElements(it.elements)
+//            }
+//        })
         binding.addShoppingElementBtn.setOnClickListener {
             val intent = Intent(applicationContext, AddEditShoppingElementActivity::class.java)
             intent.putExtra("listId", listId)

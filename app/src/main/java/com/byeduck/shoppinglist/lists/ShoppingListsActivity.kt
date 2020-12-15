@@ -27,7 +27,7 @@ class ShoppingListsActivity : AppCompatActivity() {
         val listTxtColor = sharedPreferences.getInt("listTxtColor", R.color.black)
         binding.shoppingListsRecycleView.adapter =
             ShoppingListsAdapter(
-                this, viewModel, supportFragmentManager, getColor(listColor), getColor(listTxtColor)
+                this, supportFragmentManager, getColor(listColor), getColor(listTxtColor), viewModel
             )
         binding.shoppingListsRecycleView.layoutManager = LinearLayoutManager(this)
         binding.shoppingListsRecycleView.addItemDecoration(
@@ -36,13 +36,6 @@ class ShoppingListsActivity : AppCompatActivity() {
                 DividerItemDecoration.VERTICAL
             )
         )
-        viewModel.shoppingLists.observe(this, { all ->
-            all?.let {
-                (binding.shoppingListsRecycleView.adapter as ShoppingListsAdapter).setShoppingLists(
-                    it
-                )
-            }
-        })
         binding.addShoppingListBtn.setOnClickListener {
             val intent = Intent(applicationContext, AddEditShoppingListActivity::class.java)
             startActivity(intent)

@@ -1,25 +1,14 @@
 package com.byeduck.shoppinglist.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import com.byeduck.shoppinglist.util.ShoppingListJsonAdapter
+import com.google.gson.annotations.JsonAdapter
 import java.util.*
 
-@Entity(tableName = "shopping_lists")
+@JsonAdapter(ShoppingListJsonAdapter::class)
 data class ShoppingListModel(
+    val id: String,
     var name: String,
-    var createdAt: Date = Date(),
-    var updatedAt: Date = Date()
-) {
-
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = 0L
-
-    constructor(id: Long, name: String, updatedAt: Date, createdAt: Date) : this(
-        name,
-        createdAt,
-        updatedAt
-    ) {
-        this.id = id
-    }
-
-}
+    var createdAt: Long = Date().time,
+    var updatedAt: Long = Date().time,
+    var elements: List<ShoppingElementModel> = emptyList()
+)
