@@ -9,8 +9,8 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.byeduck.shoppinglist.MainActivity
 import com.byeduck.shoppinglist.R
+import com.byeduck.shoppinglist.common.PREF_FILE_NAME
 import com.byeduck.shoppinglist.databinding.ActivityOptionsBinding
-import com.byeduck.shoppinglist.util.PREF_FILE_NAME
 
 class OptionsActivity : AppCompatActivity() {
 

@@ -1,4 +1,4 @@
-package com.byeduck.shoppinglist.util
+package com.byeduck.shoppinglist.common
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

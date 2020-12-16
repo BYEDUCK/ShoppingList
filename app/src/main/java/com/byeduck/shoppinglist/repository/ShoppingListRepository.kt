@@ -1,5 +1,6 @@
 package com.byeduck.shoppinglist.repository
 
+import com.byeduck.shoppinglist.common.ShoppingListConverter
 import com.byeduck.shoppinglist.login.LoginService
 import com.byeduck.shoppinglist.model.ShoppingElementModel
 import com.byeduck.shoppinglist.model.ShoppingListModel
@@ -7,7 +8,6 @@ import com.byeduck.shoppinglist.model.request.CreateShoppingElementRequest
 import com.byeduck.shoppinglist.model.request.CreateShoppingListRequest
 import com.byeduck.shoppinglist.model.view.ShoppingElement
 import com.byeduck.shoppinglist.model.view.ShoppingList
-import com.byeduck.shoppinglist.util.ShoppingListConverter
 import com.google.firebase.database.FirebaseDatabase
 import java.util.*
 

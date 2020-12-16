@@ -10,20 +10,17 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.byeduck.shoppinglist.action.Action
 import com.byeduck.shoppinglist.action.ShoppingActionsDialogFragment
+import com.byeduck.shoppinglist.common.FirebaseRecyclerViewAdapterBase
+import com.byeduck.shoppinglist.common.ShoppingListConverter
+import com.byeduck.shoppinglist.common.ShoppingListsViewModel
 import com.byeduck.shoppinglist.databinding.ListelemShoppingListBinding
 import com.byeduck.shoppinglist.detail.ShoppingListDetailActivity
 import com.byeduck.shoppinglist.model.ShoppingListModel
 import com.byeduck.shoppinglist.model.view.ShoppingList
-import com.byeduck.shoppinglist.util.ShoppingListConverter
-import com.byeduck.shoppinglist.util.ShoppingListsViewModel
-import com.google.firebase.database.*
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.*
-import java.util.concurrent.ConcurrentSkipListSet
 
 class ShoppingListsAdapter(
     private val context: Context,
@@ -32,15 +29,12 @@ class ShoppingListsAdapter(
     private val listTxtColor: Int,
     private val viewModel: ShoppingListsViewModel
 ) :
-    RecyclerView.Adapter<ShoppingListsAdapter.ShoppingListViewHolder>() {
-
-    private val idsRegistry = ConcurrentSkipListSet<String>()
-    private var shoppingListsToView: List<ShoppingList> = emptyList()
-    private val shoppingLists =
-        ConcurrentSkipListSet<ShoppingList> { s1, s2 ->
+    FirebaseRecyclerViewAdapterBase<ShoppingListModel, ShoppingList, ShoppingListsAdapter.ShoppingListViewHolder>(
+        { s1, s2 ->
             if (s1.id == s2.id) 0
             else (s2.updatedAt.time - s1.updatedAt.time).toInt()
-        }
+        }, ShoppingListModel::class.java
+    ) {
 
     inner class ShoppingListViewHolder(val binding: ListelemShoppingListBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -49,43 +43,15 @@ class ShoppingListsAdapter(
         val dbRef = viewModel.getDbListsRef()
         dbRef.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previous: String?) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val shoppingListModel: ShoppingListModel =
-                        snapshot.getValue(ShoppingListModel::class.java) ?: return@launch
-                    addList(ShoppingListConverter.listFromModel(shoppingListModel))
-                    withContext(Dispatchers.Main) {
-                        dataChanged()
-                    }
-                }
+                childAdded(snapshot)
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previous: String?) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val shoppingListModel: ShoppingListModel =
-                        snapshot.getValue(ShoppingListModel::class.java) ?: return@launch
-                    val shoppingList = ShoppingListConverter.listFromModel(shoppingListModel)
-                    shoppingLists.remove(shoppingList)
-                    shoppingLists.add(shoppingList)
-                    withContext(Dispatchers.Main) {
-                        dataChanged()
-                    }
-                }
+                childChanged(snapshot)
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val shoppingListModel: ShoppingListModel =
-                        snapshot.getValue(ShoppingListModel::class.java) ?: return@launch
-                    val shoppingList = ShoppingListConverter.listFromModel(shoppingListModel)
-                    if (!idsRegistry.contains(shoppingList.id)) {
-                        return@launch
-                    }
-                    shoppingLists.remove(shoppingList)
-                    idsRegistry.remove(shoppingList.id)
-                    withContext(Dispatchers.Main) {
-                        dataChanged()
-                    }
-                }
+                childRemoved(snapshot)
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previous: String?) {
@@ -109,7 +75,7 @@ class ShoppingListsAdapter(
     }
 
     override fun onBindViewHolder(holder: ShoppingListViewHolder, position: Int) {
-        val current = shoppingListsToView[position]
+        val current = itemsToView[position]
         holder.binding.shoppingListNameLbl.text = current.name
         holder.binding.shoppingListCreatedAtLbl.text = current.updatedAt.toString()
         holder.binding.root.setOnClickListener {
@@ -140,19 +106,10 @@ class ShoppingListsAdapter(
         }
     }
 
-    override fun getItemCount(): Int = shoppingListsToView.size
+    override fun getItemCount(): Int = itemsToView.size
 
-    private fun dataChanged() {
-        shoppingListsToView = shoppingLists.toList()
-        notifyDataSetChanged()
-    }
-
-    private fun addList(shoppingList: ShoppingList) {
-        if (idsRegistry.contains(shoppingList.id)) {
-            return
-        }
-        shoppingLists.add(shoppingList)
-        idsRegistry.add(shoppingList.id)
+    override fun viewItemFromModel(model: ShoppingListModel): ShoppingList {
+        return ShoppingListConverter.listFromModel(model)
     }
 
 }

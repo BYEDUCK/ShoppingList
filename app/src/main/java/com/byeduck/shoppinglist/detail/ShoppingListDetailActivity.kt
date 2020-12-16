@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.byeduck.shoppinglist.R
+import com.byeduck.shoppinglist.common.PREF_FILE_NAME
+import com.byeduck.shoppinglist.common.ShoppingListsViewModel
 import com.byeduck.shoppinglist.databinding.ActivityShoppingListDetailBinding
 import com.byeduck.shoppinglist.lists.ShoppingListsActivity
-import com.byeduck.shoppinglist.util.PREF_FILE_NAME
-import com.byeduck.shoppinglist.util.ShoppingListsViewModel
 
 class ShoppingListDetailActivity : AppCompatActivity() {
 
@@ -27,7 +27,7 @@ class ShoppingListDetailActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences(PREF_FILE_NAME, MODE_PRIVATE)
         val elemColor = sharedPreferences.getInt("elemColor", R.color.white)
         val elemTxtColor = sharedPreferences.getInt("elemTxtColor", R.color.black)
-        val adapter = ShoppingListElementsAdapter(
+        val adapter = ShoppingElementsAdapter(
             this,
             viewModel,
             supportFragmentManager,

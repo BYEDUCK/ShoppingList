@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.byeduck.shoppinglist.MainActivity
 import com.byeduck.shoppinglist.R
+import com.byeduck.shoppinglist.common.PREF_FILE_NAME
+import com.byeduck.shoppinglist.common.ShoppingListsViewModel
 import com.byeduck.shoppinglist.databinding.ActivityShoppingListsBinding
-import com.byeduck.shoppinglist.util.PREF_FILE_NAME
-import com.byeduck.shoppinglist.util.ShoppingListsViewModel
 
 class ShoppingListsActivity : AppCompatActivity() {
 

@@ -9,11 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.byeduck.shoppinglist.MainActivity
 import com.byeduck.shoppinglist.R
+import com.byeduck.shoppinglist.common.ShoppingListConverter
+import com.byeduck.shoppinglist.common.ShoppingListsViewModel
 import com.byeduck.shoppinglist.databinding.ActivityAddEditShoppingElementBinding
 import com.byeduck.shoppinglist.model.ShoppingElementModel
 import com.byeduck.shoppinglist.model.view.ShoppingElement
-import com.byeduck.shoppinglist.util.ShoppingListConverter
-import com.byeduck.shoppinglist.util.ShoppingListsViewModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
