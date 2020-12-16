@@ -15,6 +15,7 @@ import com.byeduck.shoppinglist.detail.ShoppingListDetailActivity
 import com.byeduck.shoppinglist.model.ShoppingListModel
 import com.byeduck.shoppinglist.model.view.ShoppingList
 import com.byeduck.shoppinglist.util.ShoppingListConverter
+import com.byeduck.shoppinglist.util.ShoppingListsViewModel
 import com.google.firebase.database.*
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +34,7 @@ class ShoppingListsAdapter(
 ) :
     RecyclerView.Adapter<ShoppingListsAdapter.ShoppingListViewHolder>() {
 
-    private val idToPosition = ConcurrentSkipListSet<String>()
+    private val idsRegistry = ConcurrentSkipListSet<String>()
     private var shoppingListsToView: List<ShoppingList> = emptyList()
     private val shoppingLists =
         ConcurrentSkipListSet<ShoppingList> { s1, s2 ->
@@ -45,11 +46,10 @@ class ShoppingListsAdapter(
         RecyclerView.ViewHolder(binding.root)
 
     init {
-        val dbRef = viewModel.getDbRef()
+        val dbRef = viewModel.getDbListsRef()
         dbRef.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previous: String?) {
                 CoroutineScope(Dispatchers.IO).launch {
-                    Log.v("SNAP", snapshot.value.toString())
                     val shoppingListModel: ShoppingListModel =
                         snapshot.getValue(ShoppingListModel::class.java) ?: return@launch
                     addList(ShoppingListConverter.listFromModel(shoppingListModel))
@@ -77,12 +77,11 @@ class ShoppingListsAdapter(
                     val shoppingListModel: ShoppingListModel =
                         snapshot.getValue(ShoppingListModel::class.java) ?: return@launch
                     val shoppingList = ShoppingListConverter.listFromModel(shoppingListModel)
-                    if (!idToPosition.contains(shoppingList.id)) {
-                        Log.d("DB DEL", "List ${shoppingList.id} already removed")
+                    if (!idsRegistry.contains(shoppingList.id)) {
                         return@launch
                     }
                     shoppingLists.remove(shoppingList)
-                    idToPosition.remove(shoppingList.id)
+                    idsRegistry.remove(shoppingList.id)
                     withContext(Dispatchers.Main) {
                         dataChanged()
                     }
@@ -123,7 +122,11 @@ class ShoppingListsAdapter(
                 when (action) {
                     Action.DELETE -> viewModel.deleteShoppingListById(current.id)
                         .addOnCanceledListener {
-                            Toast.makeText(context, "Failed to delete", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Failed to delete list ${current.id}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     Action.EDIT -> {
                         val intent = Intent(context, AddEditShoppingListActivity::class.java)
@@ -139,18 +142,17 @@ class ShoppingListsAdapter(
 
     override fun getItemCount(): Int = shoppingListsToView.size
 
-    private suspend fun dataChanged() {
+    private fun dataChanged() {
         shoppingListsToView = shoppingLists.toList()
         notifyDataSetChanged()
     }
 
     private fun addList(shoppingList: ShoppingList) {
-        if (idToPosition.contains(shoppingList.id)) {
-            Log.d("ADD LIST", "List ${shoppingList.id} already added")
+        if (idsRegistry.contains(shoppingList.id)) {
             return
         }
         shoppingLists.add(shoppingList)
-        idToPosition.add(shoppingList.id)
+        idsRegistry.add(shoppingList.id)
     }
 
 }

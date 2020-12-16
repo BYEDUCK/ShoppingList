@@ -14,24 +14,22 @@ sealed class ShoppingListConverter {
             shoppingList.id,
             shoppingList.name,
             shoppingList.createdAt.time,
-            shoppingList.updatedAt.time,
-            shoppingList.elements.map { modelFromListElem(it) }
+            shoppingList.updatedAt.time
         )
 
         fun listFromModel(shoppingList: ShoppingListModel) = ShoppingList(
             shoppingList.id,
             shoppingList.name,
             Date(shoppingList.createdAt),
-            Date(shoppingList.updatedAt),
-            shoppingList.elements.map { listElemFromModel(it) }
+            Date(shoppingList.updatedAt)
         )
 
-        private fun listElemFromModel(elem: ShoppingElementModel) = ShoppingElement(
+        fun modelFromElem(elem: ShoppingElement) = ShoppingElementModel(
             elem.id, elem.text, elem.price, elem.count, elem.isChecked
         )
 
-        private fun modelFromListElem(elem: ShoppingElement) = ShoppingElementModel(
-            elem.id, elem.text, elem.price, elem.count, elem.isChecked
+        fun elemFromModel(model: ShoppingElementModel) = ShoppingElement(
+            model.id, model.text, model.price, model.count, model.isChecked
         )
 
     }

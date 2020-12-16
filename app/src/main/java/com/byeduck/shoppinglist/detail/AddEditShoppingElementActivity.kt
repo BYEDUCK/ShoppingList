@@ -3,19 +3,29 @@ package com.byeduck.shoppinglist.detail
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.NumberPicker
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.byeduck.shoppinglist.MainActivity
 import com.byeduck.shoppinglist.R
 import com.byeduck.shoppinglist.databinding.ActivityAddEditShoppingElementBinding
+import com.byeduck.shoppinglist.model.ShoppingElementModel
 import com.byeduck.shoppinglist.model.view.ShoppingElement
+import com.byeduck.shoppinglist.util.ShoppingListConverter
+import com.byeduck.shoppinglist.util.ShoppingListsViewModel
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class AddEditShoppingElementActivity : AppCompatActivity() {
 
     private val pickerValues = generateNumberPickerDisplayValues()
 
-    private lateinit var viewModel: ShoppingListsDetailViewModel
+    private lateinit var viewModel: ShoppingListsViewModel
     private lateinit var activityBinding: ActivityAddEditShoppingElementBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,50 +33,84 @@ class AddEditShoppingElementActivity : AppCompatActivity() {
         activityBinding = ActivityAddEditShoppingElementBinding.inflate(layoutInflater)
         setContentView(activityBinding.root)
         val shoppingElemJson = intent?.extras?.getString("serializedElem", "")
-        val listId = intent.extras?.getLong("listId", -1L) ?: -1L
+        val listId = intent.extras?.getString("listId", "") ?: ""
         viewModel = ViewModelProvider(
-            this, ShoppingListsDetailViewModelFactory(this.application, listId)
-        ).get(ShoppingListsDetailViewModel::class.java)
+            this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.application)
+        ).get(ShoppingListsViewModel::class.java)
         val completedIntent = Intent(this, ShoppingListDetailActivity::class.java)
         initNumberPicker(activityBinding.shoppingElemCountEdit)
-        val elemId = intent?.extras?.getLong("elemId", -1L) ?: -1L
-        if (shoppingElemJson.isNullOrEmpty() && elemId < 0L) {
+        val elemId = intent?.extras?.getString("elemId", "") ?: ""
+        if (shoppingElemJson.isNullOrEmpty() && elemId.isBlank()) {
             initEditFields()
             activityBinding.shoppingElemEditSaveBtn.setOnClickListener {
-                val addedElemId = viewModel.addShoppingElement(
-                    activityBinding.shoppingElemTxtEdit.text.toString(),
-                    activityBinding.shoppingElemPriceEdit.text.toString().toDouble(),
-                    pickerValues[activityBinding.shoppingElemCountEdit.value]
-                )
-                completedIntent.putExtra("listId", listId)
-                sendBroadcastElemAdded(
-                    listId,
-                    addedElemId,
-                    activityBinding.shoppingElemTxtEdit.text.toString()
-                )
-                startActivity(completedIntent)
+                GlobalScope.launch {
+                    val addedElemId = viewModel.addShoppingListElementAsync(
+                        listId,
+                        activityBinding.shoppingElemTxtEdit.text.toString(),
+                        activityBinding.shoppingElemPriceEdit.text.toString().toDouble(),
+                        pickerValues[activityBinding.shoppingElemCountEdit.value]
+                    ).await()
+                    completedIntent.putExtra("listId", listId)
+                    sendBroadcastElemAdded(
+                        listId,
+                        addedElemId,
+                        activityBinding.shoppingElemTxtEdit.text.toString()
+                    )
+                    startActivity(completedIntent)
+                }
             }
         } else {
-            val shoppingElement: ShoppingElement =
-                if (shoppingElemJson != null && shoppingElemJson.isNotBlank()) {
-                    Gson().fromJson(shoppingElemJson, ShoppingElement::class.java)
-                } else {
-                    viewModel.getShoppingElementById(elemId)
-                }
-            initEditFields(shoppingElement.text, shoppingElement.price, shoppingElement.count)
-            activityBinding.shoppingElemEditSaveBtn.setOnClickListener {
-//                viewModel.updateShoppingElement(
-//                    ShoppingElement(
-//                        shoppingElement.id, shoppingElement.listId,
-//                        activityBinding.shoppingElemTxtEdit.text.toString(),
-//                        activityBinding.shoppingElemPriceEdit.text.toString().toDouble(),
-//                        pickerValues[activityBinding.shoppingElemCountEdit.value],
-//                        shoppingElement.isChecked
-//                    )
-//                )
-//                completedIntent.putExtra("listId", shoppingElement.listId)
-//                startActivity(completedIntent)
+            activityBinding.shoppingElemEditSaveBtn.isEnabled = false
+            if (shoppingElemJson != null && shoppingElemJson.isNotBlank()) {
+                val elem = Gson().fromJson(shoppingElemJson, ShoppingElement::class.java)
+                initEditUi(elem, listId)
+            } else {
+                viewModel.getDbListElemRef(listId)
+                    .child(elemId)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val model = snapshot.getValue(ShoppingElementModel::class.java)
+                            if (model == null) {
+                                backToMain()
+                            } else {
+                                val elem = ShoppingListConverter.elemFromModel(model)
+                                initEditUi(elem, listId)
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e("AddEditElemError", "Cannot read from db", error.toException())
+                            backToMain()
+                        }
+
+                    })
             }
+        }
+    }
+
+    private fun backToMain() {
+        val backToMainIntent =
+            Intent(applicationContext, MainActivity::class.java)
+        startActivity(backToMainIntent)
+    }
+
+    private fun initEditUi(shoppingElement: ShoppingElement, listId: String) {
+        val completedIntent = Intent(this, ShoppingListDetailActivity::class.java)
+        activityBinding.shoppingElemEditSaveBtn.isEnabled = true
+        initEditFields(shoppingElement.text, shoppingElement.price, shoppingElement.count)
+        activityBinding.shoppingElemEditSaveBtn.setOnClickListener {
+            viewModel.updateShoppingElem(
+                listId,
+                ShoppingElement(
+                    shoppingElement.id,
+                    activityBinding.shoppingElemTxtEdit.text.toString(),
+                    activityBinding.shoppingElemPriceEdit.text.toString().toDouble(),
+                    pickerValues[activityBinding.shoppingElemCountEdit.value],
+                    shoppingElement.isChecked
+                )
+            )
+            completedIntent.putExtra("listId", listId)
+            startActivity(completedIntent)
         }
     }
 
@@ -84,7 +128,7 @@ class AddEditShoppingElementActivity : AppCompatActivity() {
         activityBinding.shoppingElemPriceEdit.setText(elemPrice.toString())
     }
 
-    private fun sendBroadcastElemAdded(listId: Long, elemId: Long, elemTxt: String) {
+    private fun sendBroadcastElemAdded(listId: String, elemId: String, elemTxt: String) {
         val broadcastIntent = Intent("${getString(R.string.mainPackage)}.NOTI").apply {
             putExtra("listId", listId)
             putExtra("elemTxt", elemTxt)

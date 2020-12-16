@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.byeduck.shoppinglist.databinding.ActivityAddEditShoppingListBinding
 import com.byeduck.shoppinglist.model.view.ShoppingList
+import com.byeduck.shoppinglist.util.ShoppingListsViewModel
 import com.google.gson.Gson
 
 class AddEditShoppingListActivity : AppCompatActivity() {

@@ -6,6 +6,5 @@ data class ShoppingList(
     val id: String,
     var name: String,
     var createdAt: Date,
-    var updatedAt: Date,
-    var elements: List<ShoppingElement>
+    var updatedAt: Date
 )
