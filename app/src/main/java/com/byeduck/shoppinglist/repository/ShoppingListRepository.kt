@@ -3,6 +3,8 @@ package com.byeduck.shoppinglist.repository
 import com.byeduck.shoppinglist.login.LoginService
 import com.byeduck.shoppinglist.model.ShoppingListModel
 import com.byeduck.shoppinglist.model.request.CreateShoppingListRequest
+import com.byeduck.shoppinglist.model.view.ShoppingList
+import com.byeduck.shoppinglist.util.ShoppingListConverter
 import com.google.firebase.database.FirebaseDatabase
 import java.util.*
 
@@ -24,6 +26,15 @@ class ShoppingListRepository {
         }
 
         fun deleteById(listId: String) = db.getReference(listsRefPath).child(listId).removeValue()
+
+        suspend fun update(shoppingList: ShoppingList) {
+            val listId = shoppingList.id
+            val model = ShoppingListConverter.modelFromList(shoppingList)
+            model.updatedAt = System.currentTimeMillis()
+            db.getReference(listsRefPath)
+                .child(listId)
+                .setValue(model)
+        }
     }
 
 //    fun getById(id: Long): LiveData<ShoppingListWithElements> {

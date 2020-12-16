@@ -12,6 +12,7 @@ import com.byeduck.shoppinglist.action.Action
 import com.byeduck.shoppinglist.action.ShoppingActionsDialogFragment
 import com.byeduck.shoppinglist.databinding.ListelemShoppingListBinding
 import com.byeduck.shoppinglist.detail.ShoppingListDetailActivity
+import com.byeduck.shoppinglist.model.ShoppingListModel
 import com.byeduck.shoppinglist.model.view.ShoppingList
 import com.byeduck.shoppinglist.util.ShoppingListConverter
 import com.google.firebase.database.*
@@ -33,8 +34,8 @@ class ShoppingListsAdapter(
     RecyclerView.Adapter<ShoppingListsAdapter.ShoppingListViewHolder>() {
 
     private val idToPosition = ConcurrentSkipListSet<String>()
-    private var shoppingLists: List<ShoppingList> = emptyList()
-    private val shoppingListsV2 =
+    private var shoppingListsToView: List<ShoppingList> = emptyList()
+    private val shoppingLists =
         ConcurrentSkipListSet<ShoppingList> { s1, s2 ->
             if (s1.id == s2.id) 0
             else (s2.updatedAt.time - s1.updatedAt.time).toInt()
@@ -49,8 +50,9 @@ class ShoppingListsAdapter(
             override fun onChildAdded(snapshot: DataSnapshot, previous: String?) {
                 CoroutineScope(Dispatchers.IO).launch {
                     Log.v("SNAP", snapshot.value.toString())
-                    val shoppingListMap = snapshot.value as Map<*, *>
-                    addList(ShoppingListConverter.listFromModelMap(shoppingListMap))
+                    val shoppingListModel: ShoppingListModel =
+                        snapshot.getValue(ShoppingListModel::class.java) ?: return@launch
+                    addList(ShoppingListConverter.listFromModel(shoppingListModel))
                     withContext(Dispatchers.Main) {
                         dataChanged()
                     }
@@ -59,10 +61,11 @@ class ShoppingListsAdapter(
 
             override fun onChildChanged(snapshot: DataSnapshot, previous: String?) {
                 CoroutineScope(Dispatchers.IO).launch {
-                    val shoppingListMap = snapshot.value as Map<*, *>
-                    val shoppingList = ShoppingListConverter.listFromModelMap(shoppingListMap)
-                    shoppingListsV2.remove(shoppingList)
-                    shoppingListsV2.add(shoppingList)
+                    val shoppingListModel: ShoppingListModel =
+                        snapshot.getValue(ShoppingListModel::class.java) ?: return@launch
+                    val shoppingList = ShoppingListConverter.listFromModel(shoppingListModel)
+                    shoppingLists.remove(shoppingList)
+                    shoppingLists.add(shoppingList)
                     withContext(Dispatchers.Main) {
                         dataChanged()
                     }
@@ -71,13 +74,14 @@ class ShoppingListsAdapter(
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 CoroutineScope(Dispatchers.IO).launch {
-                    val shoppingListMap = snapshot.value as Map<*, *>
-                    val shoppingList = ShoppingListConverter.listFromModelMap(shoppingListMap)
+                    val shoppingListModel: ShoppingListModel =
+                        snapshot.getValue(ShoppingListModel::class.java) ?: return@launch
+                    val shoppingList = ShoppingListConverter.listFromModel(shoppingListModel)
                     if (!idToPosition.contains(shoppingList.id)) {
                         Log.d("DB DEL", "List ${shoppingList.id} already removed")
                         return@launch
                     }
-                    shoppingListsV2.remove(shoppingList)
+                    shoppingLists.remove(shoppingList)
                     idToPosition.remove(shoppingList.id)
                     withContext(Dispatchers.Main) {
                         dataChanged()
@@ -106,7 +110,7 @@ class ShoppingListsAdapter(
     }
 
     override fun onBindViewHolder(holder: ShoppingListViewHolder, position: Int) {
-        val current = shoppingLists[position]
+        val current = shoppingListsToView[position]
         holder.binding.shoppingListNameLbl.text = current.name
         holder.binding.shoppingListCreatedAtLbl.text = current.updatedAt.toString()
         holder.binding.root.setOnClickListener {
@@ -133,10 +137,10 @@ class ShoppingListsAdapter(
         }
     }
 
-    override fun getItemCount(): Int = shoppingLists.size
+    override fun getItemCount(): Int = shoppingListsToView.size
 
     private suspend fun dataChanged() {
-        shoppingLists = shoppingListsV2.toList()
+        shoppingListsToView = shoppingLists.toList()
         notifyDataSetChanged()
     }
 
@@ -145,7 +149,7 @@ class ShoppingListsAdapter(
             Log.d("ADD LIST", "List ${shoppingList.id} already added")
             return
         }
-        shoppingListsV2.add(shoppingList)
+        shoppingLists.add(shoppingList)
         idToPosition.add(shoppingList.id)
     }
 

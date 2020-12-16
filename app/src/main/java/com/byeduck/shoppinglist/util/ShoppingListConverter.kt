@@ -4,21 +4,21 @@ import com.byeduck.shoppinglist.model.ShoppingElementModel
 import com.byeduck.shoppinglist.model.ShoppingListModel
 import com.byeduck.shoppinglist.model.view.ShoppingElement
 import com.byeduck.shoppinglist.model.view.ShoppingList
-import com.google.gson.Gson
 import java.util.*
 
 sealed class ShoppingListConverter {
 
     companion object {
 
-        fun listFromModelMap(map: Map<*, *>): ShoppingList {
-            val gson = Gson()
-            val json = gson.toJson(map)
-            val model = gson.fromJson(json, ShoppingListModel::class.java)
-            return listFromModel(model)
-        }
+        fun modelFromList(shoppingList: ShoppingList) = ShoppingListModel(
+            shoppingList.id,
+            shoppingList.name,
+            shoppingList.createdAt.time,
+            shoppingList.updatedAt.time,
+            shoppingList.elements.map { modelFromListElem(it) }
+        )
 
-        private fun listFromModel(shoppingList: ShoppingListModel) = ShoppingList(
+        fun listFromModel(shoppingList: ShoppingListModel) = ShoppingList(
             shoppingList.id,
             shoppingList.name,
             Date(shoppingList.createdAt),
@@ -27,6 +27,10 @@ sealed class ShoppingListConverter {
         )
 
         private fun listElemFromModel(elem: ShoppingElementModel) = ShoppingElement(
+            elem.id, elem.text, elem.price, elem.count, elem.isChecked
+        )
+
+        private fun modelFromListElem(elem: ShoppingElement) = ShoppingElementModel(
             elem.id, elem.text, elem.price, elem.count, elem.isChecked
         )
 

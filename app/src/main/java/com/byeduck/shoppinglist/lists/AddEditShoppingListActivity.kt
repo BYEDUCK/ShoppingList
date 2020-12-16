@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.byeduck.shoppinglist.databinding.ActivityAddEditShoppingListBinding
+import com.byeduck.shoppinglist.model.view.ShoppingList
+import com.google.gson.Gson
 
 class AddEditShoppingListActivity : AppCompatActivity() {
 
@@ -26,14 +28,14 @@ class AddEditShoppingListActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         } else {
-//            val shoppingList = Gson().fromJson(shoppingListJson, ShoppingList::class.java)
-//            binding.shoppingListNameEditTxt.setText(shoppingList.name)
-//            binding.shoppingListEditSaveBtn.setOnClickListener {
-//                shoppingList.name = binding.shoppingListNameEditTxt.text.toString()
-//                viewModel.editShoppingList(shoppingList)
-//                val intent = Intent(applicationContext, ShoppingListsActivity::class.java)
-//                startActivity(intent)
-//            }
+            val shoppingList = Gson().fromJson(shoppingListJson, ShoppingList::class.java)
+            binding.shoppingListNameEditTxt.setText(shoppingList.name)
+            binding.shoppingListEditSaveBtn.setOnClickListener {
+                shoppingList.name = binding.shoppingListNameEditTxt.text.toString()
+                viewModel.updateShoppingList(shoppingList)
+                val intent = Intent(applicationContext, ShoppingListsActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 }
