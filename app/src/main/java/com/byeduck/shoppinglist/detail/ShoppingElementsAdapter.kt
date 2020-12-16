@@ -2,7 +2,6 @@ package com.byeduck.shoppinglist.detail
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CheckBox
@@ -17,9 +16,6 @@ import com.byeduck.shoppinglist.common.ShoppingListsViewModel
 import com.byeduck.shoppinglist.databinding.ListelemShoppingElemBinding
 import com.byeduck.shoppinglist.model.ShoppingElementModel
 import com.byeduck.shoppinglist.model.view.ShoppingElement
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.gson.Gson
 
 class ShoppingElementsAdapter(
@@ -30,37 +26,13 @@ class ShoppingElementsAdapter(
     private val elemTxtColor: Int,
     private val listId: String
 ) : FirebaseRecyclerViewAdapterBase<ShoppingElementModel, ShoppingElement, ShoppingElementsAdapter.ShoppingElementsViewHolder>(
-    { s1, s2 -> s1.id.compareTo(s2.id) }, ShoppingElementModel::class.java
+    viewModel.getDbListElemRef(listId),
+    { s1, s2 -> s1.id.compareTo(s2.id) },
+    ShoppingElementModel::class.java
 ) {
 
     inner class ShoppingElementsViewHolder(val binding: ListelemShoppingElemBinding) :
         RecyclerView.ViewHolder(binding.root)
-
-    init {
-        val dbRef = viewModel.getDbListElemRef(listId)
-        dbRef.addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                childAdded(snapshot)
-            }
-
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                childChanged(snapshot)
-            }
-
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                childRemoved(snapshot)
-            }
-
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("ShoppingElemAdapter", error.message, error.toException())
-            }
-
-        })
-    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,

@@ -2,7 +2,6 @@ package com.byeduck.shoppinglist.lists
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -17,9 +16,6 @@ import com.byeduck.shoppinglist.databinding.ListelemShoppingListBinding
 import com.byeduck.shoppinglist.detail.ShoppingListDetailActivity
 import com.byeduck.shoppinglist.model.ShoppingListModel
 import com.byeduck.shoppinglist.model.view.ShoppingList
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.gson.Gson
 
 class ShoppingListsAdapter(
@@ -30,7 +26,7 @@ class ShoppingListsAdapter(
     private val viewModel: ShoppingListsViewModel
 ) :
     FirebaseRecyclerViewAdapterBase<ShoppingListModel, ShoppingList, ShoppingListsAdapter.ShoppingListViewHolder>(
-        { s1, s2 ->
+        viewModel.getDbListsRef(), { s1, s2 ->
             if (s1.id == s2.id) 0
             else (s2.updatedAt.time - s1.updatedAt.time).toInt()
         }, ShoppingListModel::class.java
@@ -38,32 +34,6 @@ class ShoppingListsAdapter(
 
     inner class ShoppingListViewHolder(val binding: ListelemShoppingListBinding) :
         RecyclerView.ViewHolder(binding.root)
-
-    init {
-        val dbRef = viewModel.getDbListsRef()
-        dbRef.addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(snapshot: DataSnapshot, previous: String?) {
-                childAdded(snapshot)
-            }
-
-            override fun onChildChanged(snapshot: DataSnapshot, previous: String?) {
-                childChanged(snapshot)
-            }
-
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                childRemoved(snapshot)
-            }
-
-            override fun onChildMoved(snapshot: DataSnapshot, previous: String?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("ShoppingListsAdapter", error.message, error.toException())
-            }
-
-        })
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShoppingListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
