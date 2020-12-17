@@ -81,8 +81,6 @@ class ShoppingElementsAdapter(
         }
     }
 
-    override fun getItemCount(): Int = itemsToView.size
-
     override fun viewItemFromModel(model: ShoppingElementModel): ShoppingElement {
         return ShoppingListConverter.elemFromModel(model)
     }

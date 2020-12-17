@@ -62,11 +62,6 @@ class ShoppingListRepository {
                 .setValue(shoppingElem)
         }
 
-        fun deleteElem(listId: String, elemId: String) =
-            db.getReference(getElementsRefPath(listId, elemId))
-                .removeValue()
-
-
         private fun getElementsRefPath(listId: String, elemId: String) =
             "$listsRefPath/$listId/elements/$elemId"
     }

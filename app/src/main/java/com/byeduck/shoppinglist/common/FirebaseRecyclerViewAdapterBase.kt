@@ -26,15 +26,30 @@ abstract class FirebaseRecyclerViewAdapterBase<ModelType, ViewType, ViewHolderTy
     init {
         dbRef.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                childAdded(snapshot)
+                CoroutineScope(Dispatchers.IO).launch {
+                    childAdded(snapshot)
+                    withContext(Dispatchers.Main) {
+                        dataChanged()
+                    }
+                }
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                childChanged(snapshot)
+                CoroutineScope(Dispatchers.IO).launch {
+                    childChanged(snapshot)
+                    withContext(Dispatchers.Main) {
+                        dataChanged()
+                    }
+                }
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                childRemoved(snapshot)
+                CoroutineScope(Dispatchers.IO).launch {
+                    childRemoved(snapshot)
+                    withContext(Dispatchers.Main) {
+                        dataChanged()
+                    }
+                }
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
@@ -48,41 +63,26 @@ abstract class FirebaseRecyclerViewAdapterBase<ModelType, ViewType, ViewHolderTy
         })
     }
 
-    fun childAdded(snapshot: DataSnapshot) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val model = snapshot.getValue(modelClass) ?: return@launch
-            addItem(model)
-            withContext(Dispatchers.Main) {
-                dataChanged()
-            }
-        }
+    suspend fun childAdded(snapshot: DataSnapshot) {
+        val model = snapshot.getValue(modelClass) ?: return
+        addItem(model)
     }
 
-    fun childChanged(snapshot: DataSnapshot) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val model = snapshot.getValue(modelClass) ?: return@launch
-            val viewItem = viewItemFromModel(model)
-            items.remove(viewItem)
-            items.add(viewItem)
-            withContext(Dispatchers.Main) {
-                dataChanged()
-            }
-        }
+    suspend fun childChanged(snapshot: DataSnapshot) {
+        val model = snapshot.getValue(modelClass) ?: return
+        val viewItem = viewItemFromModel(model)
+        items.remove(viewItem)
+        items.add(viewItem)
     }
 
-    fun childRemoved(snapshot: DataSnapshot) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val model = snapshot.getValue(modelClass) ?: return@launch
-            if (!idsRegistry.contains(model.id)) {
-                return@launch
-            }
-            val viewItem = viewItemFromModel(model)
-            items.remove(viewItem)
-            idsRegistry.remove(model.id)
-            withContext(Dispatchers.Main) {
-                dataChanged()
-            }
+    suspend fun childRemoved(snapshot: DataSnapshot) {
+        val model = snapshot.getValue(modelClass) ?: return
+        if (!idsRegistry.contains(model.id)) {
+            return
         }
+        val viewItem = viewItemFromModel(model)
+        items.remove(viewItem)
+        idsRegistry.remove(model.id)
     }
 
     private fun addItem(item: ModelType) {
@@ -97,6 +97,8 @@ abstract class FirebaseRecyclerViewAdapterBase<ModelType, ViewType, ViewHolderTy
         itemsToView = items.toList()
         notifyDataSetChanged()
     }
+
+    override fun getItemCount() = itemsToView.size
 
     abstract fun viewItemFromModel(model: ModelType): ViewType
 
