@@ -15,10 +15,11 @@ import com.byeduck.shoppinglist.databinding.ActivityShoppingListsBinding
 class ShoppingListsActivity : AppCompatActivity() {
 
     private lateinit var viewModel: ShoppingListsViewModel
+    private lateinit var binding: ActivityShoppingListsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityShoppingListsBinding.inflate(layoutInflater)
+        binding = ActivityShoppingListsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         viewModel = ViewModelProvider(
             this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.application)
@@ -46,5 +47,11 @@ class ShoppingListsActivity : AppCompatActivity() {
     override fun onBackPressed() {
         val backToMainIntent = Intent(this, MainActivity::class.java)
         startActivity(backToMainIntent)
+    }
+
+    override fun onDestroy() {
+        val adapter = binding.shoppingListsRecycleView.adapter as ShoppingListsAdapter
+        adapter.removeListener()
+        super.onDestroy()
     }
 }

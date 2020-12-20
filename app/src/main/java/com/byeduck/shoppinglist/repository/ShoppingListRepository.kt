@@ -15,8 +15,7 @@ class ShoppingListRepository {
 
     companion object {
         private val user = LoginService.getUser()
-        private val db =
-            FirebaseDatabase.getInstance()
+        private val db = FirebaseDatabase.getInstance()
         private val listsRefPath = "lists/${user.id}"
 
         fun getDbListsRef() = db.getReference(listsRefPath)

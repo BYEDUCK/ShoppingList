@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentSkipListSet
 
 abstract class FirebaseRecyclerViewAdapterBase<ModelType, ViewType, ViewHolderType>(
-    dbRef: DatabaseReference,
+    private val dbRef: DatabaseReference,
     comparator: Comparator<ViewType>,
     private val modelClass: Class<ModelType>
 ) : RecyclerView.Adapter<ViewHolderType>() where ModelType : Model, ViewHolderType : RecyclerView.ViewHolder {
@@ -23,45 +23,49 @@ abstract class FirebaseRecyclerViewAdapterBase<ModelType, ViewType, ViewHolderTy
     private val items = ConcurrentSkipListSet(comparator)
     var itemsToView: List<ViewType> = emptyList()
 
-    init {
-        dbRef.addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    childAdded(snapshot)
-                    withContext(Dispatchers.Main) {
-                        dataChanged()
-                    }
+    private val dbListener = object : ChildEventListener {
+        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+            CoroutineScope(Dispatchers.IO).launch {
+                childAdded(snapshot)
+                withContext(Dispatchers.Main) {
+                    dataChanged()
                 }
             }
+        }
 
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    childChanged(snapshot)
-                    withContext(Dispatchers.Main) {
-                        dataChanged()
-                    }
+        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+            CoroutineScope(Dispatchers.IO).launch {
+                childChanged(snapshot)
+                withContext(Dispatchers.Main) {
+                    dataChanged()
                 }
             }
+        }
 
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    childRemoved(snapshot)
-                    withContext(Dispatchers.Main) {
-                        dataChanged()
-                    }
+        override fun onChildRemoved(snapshot: DataSnapshot) {
+            CoroutineScope(Dispatchers.IO).launch {
+                childRemoved(snapshot)
+                withContext(Dispatchers.Main) {
+                    dataChanged()
                 }
             }
+        }
 
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                Log.d("FirebaseRecyclerViewAdapter", "Child moved: ${snapshot.value}")
-            }
+        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+            Log.d("FirebaseRecyclerViewAdapter", "Child moved: ${snapshot.value}")
+        }
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseRecyclerViewAdapter", "DB error", error.toException())
-            }
+        override fun onCancelled(error: DatabaseError) {
+            Log.e("FirebaseRecyclerViewAdapter", "DB error", error.toException())
+        }
 
-        })
     }
+
+    init {
+        dbRef.addChildEventListener(dbListener)
+    }
+
+    fun removeListener() = dbRef.removeEventListener(dbListener)
 
     suspend fun childAdded(snapshot: DataSnapshot) {
         val model = snapshot.getValue(modelClass) ?: return
