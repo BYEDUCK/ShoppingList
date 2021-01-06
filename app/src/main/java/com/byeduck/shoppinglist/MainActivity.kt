@@ -10,7 +10,9 @@ import com.byeduck.shoppinglist.lists.ShoppingListsActivity
 import com.byeduck.shoppinglist.login.LoggedInUser
 import com.byeduck.shoppinglist.login.LoginActivity
 import com.byeduck.shoppinglist.login.LoginService
+import com.byeduck.shoppinglist.map.MapsActivity
 import com.byeduck.shoppinglist.options.OptionsActivity
+import com.byeduck.shoppinglist.shops.ShopsActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -42,6 +44,16 @@ class MainActivity : AppCompatActivity() {
     fun goToSettings(ignored: View) {
         val goToSettingsIntent = Intent(this, OptionsActivity::class.java)
         startActivity(goToSettingsIntent)
+    }
+
+    fun goToShops(ignored: View) {
+        val goToShopsIntent = Intent(this, ShopsActivity::class.java)
+        startActivity(goToShopsIntent)
+    }
+
+    fun goToMap(view: View) {
+        val goToMapIntent = Intent(this, MapsActivity::class.java)
+        startActivity(goToMapIntent)
     }
 
     override fun onBackPressed() {

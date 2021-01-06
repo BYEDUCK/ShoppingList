@@ -18,6 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:id="@+id/goToSettingsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="goToSettings"
@@ -25,6 +26,25 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/goToShoppingListsBtn" />
+
+    <Button
+        android:id="@+id/goToShopsBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="goToShops"
+        android:text="@string/shops"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/goToSettingsBtn" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="goToMap"
+        android:text="@string/view_your_shops"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/goToShopsBtn" />
 
     <TextView
         android:id="@+id/userNameTxt"
