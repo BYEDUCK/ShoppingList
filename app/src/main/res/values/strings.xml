@@ -23,4 +23,9 @@
     <string name="add_current_location">ADD CURRENT LOCATION</string>
     <string name="title_activity_maps">Map</string>
     <string name="view_your_shops">VIEW YOUR SHOPS</string>
+    <string name="shop_name">Shop name</string>
+    <string name="description">Description</string>
+    <string name="latitude_longitude_fill">latitude | longitude</string>
+    <string name="latitude_longitude">latitude: %.2f | longitude: %.2f</string>
+    <string name="ok">OK</string>
 </resources>

@@ -50,7 +50,7 @@ class ShopsActivity : AppCompatActivity() {
         ) {
             requestPermissions(perms, permissionReqCode)
         } else {
-            onSuccessGetCurrentLocation { addNewShopForLocation(it) }
+            onSuccessGetCurrentLocation { openAddEditShopActivity(it) }
         }
     }
 
@@ -72,7 +72,7 @@ class ShopsActivity : AppCompatActivity() {
     ) {
         if (requestCode == permissionReqCode) {
             if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                onSuccessGetCurrentLocation { addNewShopForLocation(it) }
+                onSuccessGetCurrentLocation { openAddEditShopActivity(it) }
             } else {
                 Toast.makeText(
                     this,
@@ -94,7 +94,12 @@ class ShopsActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun addNewShopForLocation(location: Location) {
-        //TODO: get name and description - persist
+    private fun openAddEditShopActivity(location: Location) {
+        val intent = Intent(applicationContext, AddEditShopActivity::class.java)
+        intent.apply {
+            putExtra("longitude", location.longitude)
+            putExtra("latitude", location.latitude)
+        }
+        startActivity(intent)
     }
 }
