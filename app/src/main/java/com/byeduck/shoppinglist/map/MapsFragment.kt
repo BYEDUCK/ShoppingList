@@ -1,6 +1,7 @@
 package com.byeduck.shoppinglist.map
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ class MapsFragment(
 
     private val callback = OnMapReadyCallback { googleMap ->
         shops.forEach {
+            Log.d("MARKER ADD", "${it.shopName} -> ${it.location}")
             googleMap.addMarker(
                 MarkerOptions()
                     .position(it.location)
@@ -25,6 +27,7 @@ class MapsFragment(
         }
 
         // zoom to first marker
+        // TODO: use LatLngBound
         // https://stackoverflow.com/questions/16458900/google-maps-api-v2-zooming-near-the-marker
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(shops[0].location, 15F))
         googleMap.animateCamera(CameraUpdateFactory.zoomIn())
