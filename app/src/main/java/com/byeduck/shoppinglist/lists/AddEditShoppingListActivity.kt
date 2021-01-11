@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.byeduck.shoppinglist.common.ShoppingListsViewModel
+import com.byeduck.shoppinglist.common.viewmodel.ShoppingListsViewModel
 import com.byeduck.shoppinglist.databinding.ActivityAddEditShoppingListBinding
 import com.byeduck.shoppinglist.model.view.ShoppingList
 import com.google.gson.Gson

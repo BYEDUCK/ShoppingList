@@ -12,7 +12,11 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.byeduck.shoppinglist.MainActivity
+import com.byeduck.shoppinglist.common.viewmodel.ShopsViewModel
 import com.byeduck.shoppinglist.databinding.ActivityShopsBinding
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -24,11 +28,24 @@ class ShopsActivity : AppCompatActivity() {
 
     private val cancellationTokenSource = CancellationTokenSource()
     private val permissionReqCode = 123
+    private lateinit var binding: ActivityShopsBinding
+    private lateinit var viewModel: ShopsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityShopsBinding.inflate(layoutInflater)
+        binding = ActivityShopsBinding.inflate(layoutInflater)
+        viewModel = ViewModelProvider(
+            this, ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+        ).get(ShopsViewModel::class.java)
         setContentView(binding.root)
+        binding.shopsRecyclerView.adapter = ShopsAdapter(viewModel, this, supportFragmentManager)
+        binding.shopsRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.shopsRecyclerView.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+            )
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -91,11 +108,13 @@ class ShopsActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         cancellationTokenSource.cancel()
+        val adapter = binding.shopsRecyclerView.adapter as ShopsAdapter
+        adapter.removeListener()
         super.onDestroy()
     }
 
     private fun openAddEditShopActivity(location: Location) {
-        val intent = Intent(applicationContext, AddEditShopActivity::class.java)
+        val intent = Intent(applicationContext, AddEditViewShopActivity::class.java)
         intent.apply {
             putExtra("longitude", location.longitude)
             putExtra("latitude", location.latitude)

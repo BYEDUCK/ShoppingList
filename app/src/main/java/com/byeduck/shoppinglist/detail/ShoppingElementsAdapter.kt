@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.byeduck.shoppinglist.action.Action
 import com.byeduck.shoppinglist.action.ShoppingActionsDialogFragment
 import com.byeduck.shoppinglist.common.FirebaseRecyclerViewAdapterBase
-import com.byeduck.shoppinglist.common.ShoppingListConverter
-import com.byeduck.shoppinglist.common.ShoppingListsViewModel
+import com.byeduck.shoppinglist.common.converter.ShoppingListConverter
+import com.byeduck.shoppinglist.common.viewmodel.ShoppingListsViewModel
 import com.byeduck.shoppinglist.databinding.ListelemShoppingElemBinding
 import com.byeduck.shoppinglist.model.ShoppingElementModel
 import com.byeduck.shoppinglist.model.view.ShoppingElement

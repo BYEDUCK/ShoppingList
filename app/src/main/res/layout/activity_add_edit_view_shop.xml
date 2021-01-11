@@ -48,6 +48,7 @@
         android:textAlignment="center" />
 
     <LinearLayout
+        android:id="@+id/actionButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"

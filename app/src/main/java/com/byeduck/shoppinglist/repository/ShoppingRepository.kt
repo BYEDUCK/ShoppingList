@@ -1,26 +1,49 @@
 package com.byeduck.shoppinglist.repository
 
-import com.byeduck.shoppinglist.common.ShoppingListConverter
+import com.byeduck.shoppinglist.common.converter.ShopConverter
+import com.byeduck.shoppinglist.common.converter.ShoppingListConverter
 import com.byeduck.shoppinglist.login.LoginService
+import com.byeduck.shoppinglist.model.ShopModel
 import com.byeduck.shoppinglist.model.ShoppingElementModel
 import com.byeduck.shoppinglist.model.ShoppingListModel
+import com.byeduck.shoppinglist.model.request.CreateShopRequest
 import com.byeduck.shoppinglist.model.request.CreateShoppingElementRequest
 import com.byeduck.shoppinglist.model.request.CreateShoppingListRequest
+import com.byeduck.shoppinglist.model.view.Shop
 import com.byeduck.shoppinglist.model.view.ShoppingElement
 import com.byeduck.shoppinglist.model.view.ShoppingList
 import com.google.firebase.database.FirebaseDatabase
 import java.util.*
 
-class ShoppingListRepository {
+class ShoppingRepository {
 
     companion object {
         private val user = LoginService.getUser()
         private val db = FirebaseDatabase.getInstance()
         private val listsRefPath = "lists/${user.id}"
+        private val shopsRefPath = "shops/${user.id}"
 
         fun getDbListsRef() = db.getReference(listsRefPath)
 
         fun getDbListElemRef(listId: String) = getDbListsRef().child(listId).child("elements")
+
+        fun getDbShopsRef() = db.getReference(shopsRefPath)
+
+        suspend fun insertShop(request: CreateShopRequest): String {
+            val shopId = UUID.randomUUID().toString()
+            db.getReference(shopsRefPath)
+                .child(shopId)
+                .setValue(
+                    ShopModel(
+                        shopId,
+                        request.shopName,
+                        request.description,
+                        request.latitude,
+                        request.longitude
+                    )
+                )
+            return shopId
+        }
 
         suspend fun insertList(request: CreateShoppingListRequest): String {
             val listId = UUID.randomUUID().toString()
@@ -38,6 +61,11 @@ class ShoppingListRepository {
             return elemId
         }
 
+        fun deleteShopById(shopId: String) =
+            db.getReference(shopsRefPath)
+                .child(shopId)
+                .removeValue()
+
         fun deleteListElementById(listId: String, elemId: String) =
             db.getReference(getElementsRefPath(listId, elemId))
                 .removeValue()
@@ -46,6 +74,14 @@ class ShoppingListRepository {
             db.getReference(listsRefPath)
                 .child(listId)
                 .removeValue()
+
+        suspend fun updateShop(shop: Shop) {
+            val shopId = shop.id
+            val model = ShopConverter.modelFromShop(shop)
+            db.getReference(shopsRefPath)
+                .child(shopId)
+                .setValue(shop)
+        }
 
         suspend fun updateList(shoppingList: ShoppingList) {
             val listId = shoppingList.id

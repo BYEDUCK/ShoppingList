@@ -1,4 +1,4 @@
-package com.byeduck.shoppinglist.common
+package com.byeduck.shoppinglist.common.converter
 
 import com.byeduck.shoppinglist.model.ShoppingElementModel
 import com.byeduck.shoppinglist.model.ShoppingListModel

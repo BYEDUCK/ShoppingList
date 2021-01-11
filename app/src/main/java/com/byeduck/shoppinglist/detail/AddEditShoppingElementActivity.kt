@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.byeduck.shoppinglist.MainActivity
 import com.byeduck.shoppinglist.R
-import com.byeduck.shoppinglist.common.ShoppingListConverter
-import com.byeduck.shoppinglist.common.ShoppingListsViewModel
+import com.byeduck.shoppinglist.common.converter.ShoppingListConverter
+import com.byeduck.shoppinglist.common.viewmodel.ShoppingListsViewModel
 import com.byeduck.shoppinglist.databinding.ActivityAddEditShoppingElementBinding
 import com.byeduck.shoppinglist.model.ShoppingElementModel
 import com.byeduck.shoppinglist.model.view.ShoppingElement
