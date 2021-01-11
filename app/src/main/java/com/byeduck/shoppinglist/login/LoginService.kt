@@ -20,6 +20,11 @@ class LoginService {
             loggedInUser = restoredUser
             return restoredUser
         }
+
+        fun logOut() {
+            FirebaseAuth.getInstance().signOut()
+            loggedInUser = null
+        }
     }
 
 }

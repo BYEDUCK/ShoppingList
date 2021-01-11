@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.byeduck.shoppinglist.R
 import com.byeduck.shoppinglist.common.viewmodel.ShopsViewModel
 import com.byeduck.shoppinglist.databinding.ActivityAddEditViewShopBinding
+import com.byeduck.shoppinglist.map.MapsFragment
+import com.byeduck.shoppinglist.map.ShopMarker
 import com.byeduck.shoppinglist.model.view.Shop
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
@@ -18,7 +20,6 @@ class AddEditViewShopActivity : AppCompatActivity() {
     private lateinit var viewModel: ShopsViewModel
     private lateinit var location: LatLng
     private var shopId = ""
-    private var viewOnly = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,9 +35,11 @@ class AddEditViewShopActivity : AppCompatActivity() {
             val longitude = intent?.getDoubleExtra("longitude", 0.0) ?: 0.0
             location = LatLng(latitude, longitude)
             binding.locationTxt.text = getString(R.string.latitude_longitude, latitude, longitude)
+            displayMapFragment()
         } else {
             val shop = Gson().fromJson(shopJson, Shop::class.java)
             shopId = shop.id
+            location = LatLng(shop.latitude, shop.longitude)
             binding.shopNameTxt.setText(shop.name)
             binding.shopDescriptionTxt.setText(shop.description)
             binding.locationTxt.text =
@@ -46,8 +49,8 @@ class AddEditViewShopActivity : AppCompatActivity() {
                 binding.shopDescriptionTxt.isEnabled = false
                 binding.actionButtons.visibility = View.INVISIBLE
             }
+            displayMapFragment(shop.name)
         }
-
     }
 
     override fun onBackPressed() {
@@ -57,7 +60,7 @@ class AddEditViewShopActivity : AppCompatActivity() {
     fun addEditShop(ignored: View) {
         val shopName = binding.shopNameTxt.text.toString()
         val description = binding.shopDescriptionTxt.text.toString()
-        if (shopId.isNotEmpty()) {
+        if (shopId.isEmpty()) {
             viewModel.addShop(shopName, description, location)
         } else {
             viewModel.updateShop(
@@ -71,6 +74,15 @@ class AddEditViewShopActivity : AppCompatActivity() {
 
     fun cancel(ignored: View) {
         goBackToShops()
+    }
+
+    private fun displayMapFragment(markerTitle: String = "My location") {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(
+            R.id.mapPlaceholder,
+            MapsFragment(listOf(ShopMarker(markerTitle, location)))
+        )
+        fragmentTransaction.commit()
     }
 
     private fun goBackToShops() {

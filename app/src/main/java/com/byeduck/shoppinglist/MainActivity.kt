@@ -10,10 +10,8 @@ import com.byeduck.shoppinglist.lists.ShoppingListsActivity
 import com.byeduck.shoppinglist.login.LoggedInUser
 import com.byeduck.shoppinglist.login.LoginActivity
 import com.byeduck.shoppinglist.login.LoginService
-import com.byeduck.shoppinglist.map.MapsActivity
 import com.byeduck.shoppinglist.options.OptionsActivity
 import com.byeduck.shoppinglist.shops.ShopsActivity
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -52,13 +50,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun goToMap(view: View) {
-        val goToMapIntent = Intent(this, MapsActivity::class.java)
-        startActivity(goToMapIntent)
     }
 
     override fun onBackPressed() {
         if (wasBackPressed) {
-            FirebaseAuth.getInstance().signOut()
+            LoginService.logOut()
             val backToLoginIntent = Intent(applicationContext, LoginActivity::class.java)
             startActivity(backToLoginIntent)
         } else {
