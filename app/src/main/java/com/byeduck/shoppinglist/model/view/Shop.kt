@@ -5,5 +5,6 @@ data class Shop(
     var name: String,
     var description: String,
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
+    val radius: Double
 )

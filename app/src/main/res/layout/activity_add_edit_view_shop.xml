@@ -51,6 +51,22 @@
             android:textAlignment="center" />
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:labelFor="@id/shopRadiusTxt"
+            android:text="@string/radius"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/shopRadiusTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:textAlignment="center" />
+
+        <TextView
             android:id="@+id/locationTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,7 +78,7 @@
             android:id="@+id/actionButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="20dp"
             android:gravity="center"
             android:orientation="horizontal">
 

@@ -28,4 +28,6 @@
     <string name="latitude_longitude_fill">latitude | longitude</string>
     <string name="latitude_longitude">latitude: %.2f | longitude: %.2f</string>
     <string name="ok">OK</string>
+    <string name="default_radius">50</string>
+    <string name="radius">Radius (meters)</string>
 </resources>

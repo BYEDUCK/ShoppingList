@@ -45,7 +45,13 @@ class ShopsMapActivity : AppCompatActivity() {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(
             R.id.mapPlaceholder,
-            MapsFragment(shops.map { ShopMarker(it.name, LatLng(it.latitude, it.longitude)) })
+            MapsFragment(shops.map {
+                ShopMarker(
+                    it.name,
+                    LatLng(it.latitude, it.longitude),
+                    it.radius
+                )
+            })
         )
         fragmentTransaction.commit()
     }

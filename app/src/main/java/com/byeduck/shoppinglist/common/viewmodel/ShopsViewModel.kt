@@ -14,10 +14,10 @@ class ShopsViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getDbShopsListRef() = ShoppingRepository.getDbShopsRef()
 
-    fun addShop(name: String, description: String, location: LatLng) =
+    fun addShop(name: String, description: String, location: LatLng, radius: Double) =
         viewModelScope.launch(Dispatchers.IO) {
             ShoppingRepository.insertShop(
-                CreateShopRequest(name, description, location.latitude, location.longitude)
+                CreateShopRequest(name, description, location.latitude, location.longitude, radius)
             )
         }
 

@@ -45,6 +45,7 @@ class ShopsAdapter(
         holder.binding.shopLocationTxt.text = context.getString(
             R.string.latitude_longitude, current.latitude, current.longitude
         )
+        holder.binding.shopRadiusTxt.text = current.radius.toString()
         holder.binding.root.setOnClickListener {
             val intent = Intent(context, AddEditViewShopActivity::class.java)
             intent.apply {

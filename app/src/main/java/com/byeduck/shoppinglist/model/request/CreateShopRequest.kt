@@ -4,5 +4,6 @@ data class CreateShopRequest(
     val shopName: String,
     val description: String,
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
+    val radius: Double
 )

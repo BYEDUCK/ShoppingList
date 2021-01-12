@@ -35,6 +35,7 @@ class AddEditViewShopActivity : AppCompatActivity() {
             val longitude = intent?.getDoubleExtra("longitude", 0.0) ?: 0.0
             location = LatLng(latitude, longitude)
             binding.locationTxt.text = getString(R.string.latitude_longitude, latitude, longitude)
+            binding.shopRadiusTxt.setText(getString(R.string.default_radius))
             displayMapFragment()
         } else {
             val shop = Gson().fromJson(shopJson, Shop::class.java)
@@ -42,11 +43,13 @@ class AddEditViewShopActivity : AppCompatActivity() {
             location = LatLng(shop.latitude, shop.longitude)
             binding.shopNameTxt.setText(shop.name)
             binding.shopDescriptionTxt.setText(shop.description)
+            binding.shopRadiusTxt.setText(shop.radius.toString())
             binding.locationTxt.text =
                 getString(R.string.latitude_longitude, shop.latitude, shop.longitude)
             if (viewOnly) {
                 binding.shopNameTxt.isEnabled = false
                 binding.shopDescriptionTxt.isEnabled = false
+                binding.shopRadiusTxt.isEnabled = false
                 binding.actionButtons.visibility = View.INVISIBLE
             }
             displayMapFragment(shop.name)
@@ -60,12 +63,13 @@ class AddEditViewShopActivity : AppCompatActivity() {
     fun addEditShop(ignored: View) {
         val shopName = binding.shopNameTxt.text.toString()
         val description = binding.shopDescriptionTxt.text.toString()
+        val radius = binding.shopRadiusTxt.text.toString().toDouble()
         if (shopId.isEmpty()) {
-            viewModel.addShop(shopName, description, location)
+            viewModel.addShop(shopName, description, location, radius)
         } else {
             viewModel.updateShop(
                 Shop(
-                    shopId, shopName, description, location.latitude, location.longitude
+                    shopId, shopName, description, location.latitude, location.longitude, radius
                 )
             )
         }
@@ -77,10 +81,11 @@ class AddEditViewShopActivity : AppCompatActivity() {
     }
 
     private fun displayMapFragment(markerTitle: String = "My location") {
+        val radius = binding.shopRadiusTxt.text.toString().toDouble()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(
             R.id.mapPlaceholder,
-            MapsFragment(listOf(ShopMarker(markerTitle, location)))
+            MapsFragment(listOf(ShopMarker(markerTitle, location, radius)))
         )
         fragmentTransaction.commit()
     }

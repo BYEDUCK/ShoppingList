@@ -8,11 +8,11 @@ sealed class ShopConverter {
     companion object {
 
         fun modelFromShop(shop: Shop) = ShopModel(
-            shop.id, shop.name, shop.description, shop.latitude, shop.longitude
+            shop.id, shop.name, shop.description, shop.latitude, shop.longitude, shop.radius
         )
 
         fun shopFromModel(model: ShopModel) = Shop(
-            model.id, model.name, model.description, model.latitude, model.longitude
+            model.id, model.name, model.description, model.latitude, model.longitude, model.radius
         )
 
     }

@@ -10,6 +10,7 @@ import com.byeduck.shoppinglist.R
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 
 class MapsFragment(
@@ -23,6 +24,13 @@ class MapsFragment(
                 MarkerOptions()
                     .position(it.location)
                     .title(it.shopName)
+            )
+            googleMap.addCircle(
+                CircleOptions()
+                    .fillColor(R.color.circle_blue)
+                    .strokeColor(R.color.circle_dark_blue)
+                    .center(it.location)
+                    .radius(it.radius)
             )
         }
 

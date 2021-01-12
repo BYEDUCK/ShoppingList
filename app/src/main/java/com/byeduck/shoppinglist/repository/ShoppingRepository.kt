@@ -39,7 +39,8 @@ class ShoppingRepository {
                         request.shopName,
                         request.description,
                         request.latitude,
-                        request.longitude
+                        request.longitude,
+                        request.radius
                     )
                 )
             return shopId
@@ -80,7 +81,7 @@ class ShoppingRepository {
             val model = ShopConverter.modelFromShop(shop)
             db.getReference(shopsRefPath)
                 .child(shopId)
-                .setValue(shop)
+                .setValue(model)
         }
 
         suspend fun updateList(shoppingList: ShoppingList) {
