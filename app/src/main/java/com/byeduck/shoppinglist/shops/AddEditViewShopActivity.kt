@@ -20,7 +20,6 @@ import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
-import java.util.*
 
 class AddEditViewShopActivity : AppCompatActivity() {
 
@@ -73,16 +72,36 @@ class AddEditViewShopActivity : AppCompatActivity() {
         val description = binding.shopDescriptionTxt.text.toString()
         val radius = binding.shopRadiusTxt.text.toString().toDouble()
         if (shopId.isEmpty()) {
-            viewModel.addShop(shopName, description, location, radius)
+            viewModel
+                .addShop(shopName, description, location, radius)
+                .addOnSuccessListener {
+                    setGeoFence(it, radius)
+                    goBackToShops()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                }
         } else {
-            viewModel.updateShop(
-                Shop(
-                    shopId, shopName, description, location.latitude, location.longitude, radius
+            viewModel
+                .updateShop(
+                    Shop(
+                        shopId,
+                        shopName,
+                        description,
+                        location.latitude,
+                        location.longitude,
+                        radius
+                    )
                 )
-            )
+                .addOnSuccessListener {
+                    setGeoFence(shopId, radius)
+                    goBackToShops()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    goBackToShops()
+                }
         }
-        setGeoFence(shopName, radius)
-        goBackToShops()
     }
 
     fun cancel(ignored: View) {
@@ -90,10 +109,9 @@ class AddEditViewShopActivity : AppCompatActivity() {
     }
 
     @SuppressLint("MissingPermission")
-    private fun setGeoFence(shopName: String, radius: Double) {
-        val hash = Objects.hash(shopName, location).toString(16)
-        val geoIdEnter = "$hash-enter"
-        val geoIdExit = "$hash-exit"
+    private fun setGeoFence(shopId: String, radius: Double) {
+        val geoIdEnter = "$shopId-enter"
+        val geoIdExit = "$shopId-exit"
         val geoClient = LocationServices.getGeofencingClient(this)
         geoClient.removeGeofences(listOf(geoIdEnter, geoIdExit))
         val geofenceEnter = Geofence.Builder().setRequestId(geoIdEnter)

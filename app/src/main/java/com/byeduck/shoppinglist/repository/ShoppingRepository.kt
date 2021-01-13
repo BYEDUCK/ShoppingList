@@ -12,6 +12,8 @@ import com.byeduck.shoppinglist.model.request.CreateShoppingListRequest
 import com.byeduck.shoppinglist.model.view.Shop
 import com.byeduck.shoppinglist.model.view.ShoppingElement
 import com.byeduck.shoppinglist.model.view.ShoppingList
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.database.FirebaseDatabase
 import java.util.*
 
@@ -29,21 +31,35 @@ class ShoppingRepository {
 
         fun getDbShopsRef() = db.getReference(shopsRefPath)
 
-        suspend fun insertShop(request: CreateShopRequest): String {
-            val shopId = UUID.randomUUID().toString()
-            db.getReference(shopsRefPath)
+        fun insertShop(request: CreateShopRequest): Task<String> {
+            val shopId =
+                Objects.hash(request.shopName, request.latitude, request.longitude).toString(16)
+            val taskCompletionSource = TaskCompletionSource<String>()
+            return db.getReference(shopsRefPath)
                 .child(shopId)
-                .setValue(
-                    ShopModel(
-                        shopId,
-                        request.shopName,
-                        request.description,
-                        request.latitude,
-                        request.longitude,
-                        request.radius
-                    )
-                )
-            return shopId
+                .get()
+                .onSuccessTask {
+                    if (!it.exists()) {
+                        db.getReference(shopsRefPath)
+                            .child(shopId)
+                            .setValue(
+                                ShopModel(
+                                    shopId,
+                                    request.shopName,
+                                    request.description,
+                                    request.latitude,
+                                    request.longitude,
+                                    request.radius
+                                )
+                            ).onSuccessTask {
+                                taskCompletionSource.setResult(shopId)
+                                taskCompletionSource.task
+                            }
+                    } else {
+                        taskCompletionSource.setException(IllegalArgumentException("Shop already exists"))
+                        taskCompletionSource.task
+                    }
+                }
         }
 
         suspend fun insertList(request: CreateShoppingListRequest): String {
@@ -76,10 +92,10 @@ class ShoppingRepository {
                 .child(listId)
                 .removeValue()
 
-        suspend fun updateShop(shop: Shop) {
+        fun updateShop(shop: Shop): Task<Void> {
             val shopId = shop.id
             val model = ShopConverter.modelFromShop(shop)
-            db.getReference(shopsRefPath)
+            return db.getReference(shopsRefPath)
                 .child(shopId)
                 .setValue(model)
         }
