@@ -35,7 +35,6 @@ class MapsFragment(
         }
 
         // zoom to first marker
-        // TODO: use LatLngBound
         // https://stackoverflow.com/questions/16458900/google-maps-api-v2-zooming-near-the-marker
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(shops[0].location, 15F))
         googleMap.animateCamera(CameraUpdateFactory.zoomIn())

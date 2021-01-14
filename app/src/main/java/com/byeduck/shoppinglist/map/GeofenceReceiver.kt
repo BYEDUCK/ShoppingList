@@ -6,9 +6,19 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
-import com.byeduck.shoppinglist.lists.ShoppingListsActivity
+import com.byeduck.shoppinglist.MainActivity
+import com.byeduck.shoppinglist.common.converter.ShopConverter
+import com.byeduck.shoppinglist.model.PromotionModel
+import com.byeduck.shoppinglist.model.view.Promotion
+import com.byeduck.shoppinglist.repository.ShoppingRepository
+import com.byeduck.shoppinglist.shops.promo.AddEditViewPromotionActivity
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import java.time.LocalDate
+import java.util.*
 
 class GeofenceReceiver : BroadcastReceiver() {
 
@@ -27,19 +37,38 @@ class GeofenceReceiver : BroadcastReceiver() {
                     return
                 }
             }
+            val promoId = Objects.hash(shopId, LocalDate.now().toString()).toString(16)
+            ShoppingRepository.getDbPromosRef()
+                .child(promoId)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val notificationManager = NotificationManagerCompat.from(context)
+                        var promo: Promotion? = null
+                        val activityIntent = if (snapshot.exists()) {
+                            val promoModel = snapshot.getValue(PromotionModel::class.java) ?: return
+                            promo = ShopConverter.promotionFromModel(promoModel)
+                            Intent(context, AddEditViewPromotionActivity::class.java).apply {
+                                putExtra("promoId", promoId)
+                                putExtra("view", true)
+                            }
+                        } else {
+                            Intent(context, MainActivity::class.java)
+                        }
+                        val pendingIntent = PendingIntent.getActivity(
+                            context, System.currentTimeMillis().toInt(), activityIntent,
+                            PendingIntent.FLAG_CANCEL_CURRENT
+                        )
+                        val notification = NotificationGenerator.getNotification(
+                            userActivity, promo, pendingIntent, context
+                        )
+                        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
+                    }
 
-            val activityIntent = Intent(context, ShoppingListsActivity::class.java).apply {
-                putExtra("shopId", shopId)
-            }
-            val pendingIntent = PendingIntent.getActivity(
-                context, System.currentTimeMillis().toInt(), activityIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT
-            )
-            val notification = NotificationGenerator.getNotification(
-                userActivity, shopId, pendingIntent, context
-            )
-            val notificationManager = NotificationManagerCompat.from(context)
-            notificationManager.notify(System.currentTimeMillis().toInt(), notification)
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("GEOFENCE RECEIVER", "ERROR", error.toException())
+                    }
+
+                })
         }
     }
 }

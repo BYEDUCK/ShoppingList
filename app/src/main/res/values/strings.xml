@@ -30,4 +30,11 @@
     <string name="ok">OK</string>
     <string name="default_radius">50</string>
     <string name="radius">Radius (meters)</string>
+    <string name="add_promotion">ADD PROMOTION</string>
+    <string name="promo_name">Promo name</string>
+    <string name="short_description">Short description</string>
+    <string name="full_description">Full description</string>
+    <string name="date">Date</string>
+    <string name="shop">Shop</string>
+    <string name="promotions">PROMOTIONS</string>
 </resources>

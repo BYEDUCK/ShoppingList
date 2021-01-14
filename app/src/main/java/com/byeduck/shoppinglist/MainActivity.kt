@@ -13,6 +13,7 @@ import com.byeduck.shoppinglist.login.LoginService
 import com.byeduck.shoppinglist.map.shops.ShopsMapActivity
 import com.byeduck.shoppinglist.options.OptionsActivity
 import com.byeduck.shoppinglist.shops.ShopsActivity
+import com.byeduck.shoppinglist.shops.promo.PromoActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -50,9 +51,14 @@ class MainActivity : AppCompatActivity() {
         startActivity(goToShopsIntent)
     }
 
-    fun goToMap(view: View) {
+    fun goToMap(ignored: View) {
         val goToShopsMapIntent = Intent(this, ShopsMapActivity::class.java)
         startActivity(goToShopsMapIntent)
+    }
+
+    fun goToPromotions(ignored: View) {
+        val goToPromotionsIntent = Intent(this, PromoActivity::class.java)
+        startActivity(goToPromotionsIntent)
     }
 
     override fun onBackPressed() {

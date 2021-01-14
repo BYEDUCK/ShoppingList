@@ -3,12 +3,15 @@ package com.byeduck.shoppinglist.repository
 import com.byeduck.shoppinglist.common.converter.ShopConverter
 import com.byeduck.shoppinglist.common.converter.ShoppingListConverter
 import com.byeduck.shoppinglist.login.LoginService
+import com.byeduck.shoppinglist.model.PromotionModel
 import com.byeduck.shoppinglist.model.ShopModel
 import com.byeduck.shoppinglist.model.ShoppingElementModel
 import com.byeduck.shoppinglist.model.ShoppingListModel
+import com.byeduck.shoppinglist.model.request.CreatePromoRequest
 import com.byeduck.shoppinglist.model.request.CreateShopRequest
 import com.byeduck.shoppinglist.model.request.CreateShoppingElementRequest
 import com.byeduck.shoppinglist.model.request.CreateShoppingListRequest
+import com.byeduck.shoppinglist.model.view.Promotion
 import com.byeduck.shoppinglist.model.view.Shop
 import com.byeduck.shoppinglist.model.view.ShoppingElement
 import com.byeduck.shoppinglist.model.view.ShoppingList
@@ -24,12 +27,32 @@ class ShoppingRepository {
         private val db = FirebaseDatabase.getInstance()
         private val listsRefPath = "lists/${user.id}"
         private val shopsRefPath = "shops/${user.id}"
+        private val promosRefPath = "promos/${user.id}"
 
         fun getDbListsRef() = db.getReference(listsRefPath)
 
         fun getDbListElemRef(listId: String) = getDbListsRef().child(listId).child("elements")
 
         fun getDbShopsRef() = db.getReference(shopsRefPath)
+
+        fun getDbPromosRef() = db.getReference(promosRefPath)
+
+        fun insertPromo(request: CreatePromoRequest): Task<Void> {
+            val promoId = Objects.hash(request.shopId, request.date).toString(16)
+            return db.getReference(promosRefPath)
+                .child(promoId)
+                .setValue(
+                    PromotionModel(
+                        promoId,
+                        request.shopId,
+                        request.shopName,
+                        request.promoName,
+                        request.promoShortDesc,
+                        request.promoFullDesc,
+                        request.date
+                    )
+                )
+        }
 
         fun insertShop(request: CreateShopRequest): Task<String> {
             val shopId =
@@ -78,6 +101,11 @@ class ShoppingRepository {
             return elemId
         }
 
+        fun deletePromoById(promoId: String) =
+            db.getReference(promosRefPath)
+                .child(promoId)
+                .removeValue()
+
         fun deleteShopById(shopId: String) =
             db.getReference(shopsRefPath)
                 .child(shopId)
@@ -91,6 +119,14 @@ class ShoppingRepository {
             db.getReference(listsRefPath)
                 .child(listId)
                 .removeValue()
+
+        fun updatePromo(promo: Promotion): Task<Void> {
+            val promoId = promo.id
+            val model = ShopConverter.modelFromPromotion(promo)
+            return db.getReference(promosRefPath)
+                .child(promoId)
+                .setValue(model)
+        }
 
         fun updateShop(shop: Shop): Task<Void> {
             val shopId = shop.id

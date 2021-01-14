@@ -8,6 +8,7 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.byeduck.shoppinglist.R
+import com.byeduck.shoppinglist.model.view.Promotion
 import java.util.*
 
 class NotificationGenerator {
@@ -16,18 +17,27 @@ class NotificationGenerator {
 
         fun getNotification(
             userActivity: String,
-            shopId: String,
+            promo: Promotion?,
             pendingIntent: PendingIntent,
             context: Context
         ): Notification {
             val channelId = createNotificationChannel(context)
-            return NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Shop -> $userActivity")
-                .setContentText("You did ${userActivity}ed shop with id $shopId")
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
-                .build()
+            return if (promo == null)
+                NotificationCompat.Builder(context, channelId)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("You ${userActivity}ed shop")
+                    .setContentText("Sorry - no promotion for today")
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+                    .build()
+            else
+                NotificationCompat.Builder(context, channelId)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("You ${userActivity}ed shop ${promo.shopName}")
+                    .setContentText("Promotion for today is ${promo.name}\n${promo.shortDescription}")
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+                    .build()
         }
 
         private fun createNotificationChannel(context: Context): String {
