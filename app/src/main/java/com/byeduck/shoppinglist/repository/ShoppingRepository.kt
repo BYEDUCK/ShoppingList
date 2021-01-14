@@ -38,7 +38,7 @@ class ShoppingRepository {
         fun getDbPromosRef() = db.getReference(promosRefPath)
 
         fun insertPromo(request: CreatePromoRequest): Task<Void> {
-            val promoId = Objects.hash(request.shopId, request.date).toString(16)
+            val promoId = generatePromoId(request.shopId, request.date)
             return db.getReference(promosRefPath)
                 .child(promoId)
                 .setValue(
@@ -55,8 +55,7 @@ class ShoppingRepository {
         }
 
         fun insertShop(request: CreateShopRequest): Task<String> {
-            val shopId =
-                Objects.hash(request.shopName, request.latitude, request.longitude).toString(16)
+            val shopId = generateShopId(request.shopName, request.latitude, request.longitude)
             val taskCompletionSource = TaskCompletionSource<String>()
             return db.getReference(shopsRefPath)
                 .child(shopId)
@@ -121,7 +120,11 @@ class ShoppingRepository {
                 .removeValue()
 
         fun updatePromo(promo: Promotion): Task<Void> {
-            val promoId = promo.id
+            val promoId = generatePromoId(promo.shopId, promo.date.toString())
+            if (promoId != promo.id) {
+                deletePromoById(promo.id)
+                promo.id = promoId
+            }
             val model = ShopConverter.modelFromPromotion(promo)
             return db.getReference(promosRefPath)
                 .child(promoId)
@@ -129,7 +132,11 @@ class ShoppingRepository {
         }
 
         fun updateShop(shop: Shop): Task<Void> {
-            val shopId = shop.id
+            val shopId = generateShopId(shop.name, shop.latitude, shop.longitude)
+            if (shopId != shop.id) {
+                deleteShopById(shop.id)
+                shop.id = shopId
+            }
             val model = ShopConverter.modelFromShop(shop)
             return db.getReference(shopsRefPath)
                 .child(shopId)
@@ -152,5 +159,13 @@ class ShoppingRepository {
 
         private fun getElementsRefPath(listId: String, elemId: String) =
             "$listsRefPath/$listId/elements/$elemId"
+
+        private fun generateShopId(shopName: String, latitude: Double, longitude: Double): String {
+            return Objects.hash(shopName, latitude, longitude).toString(16)
+        }
+
+        private fun generatePromoId(shopId: String, date: String): String {
+            return Objects.hash(shopId, date).toString(16)
+        }
     }
 }

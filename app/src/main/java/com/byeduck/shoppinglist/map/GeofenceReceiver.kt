@@ -38,6 +38,7 @@ class GeofenceReceiver : BroadcastReceiver() {
                 }
             }
             val promoId = Objects.hash(shopId, LocalDate.now().toString()).toString(16)
+            Log.d("GEOFENCE RECEIVER", "PROMO ID: $promoId for today ${LocalDate.now()}")
             ShoppingRepository.getDbPromosRef()
                 .child(promoId)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
