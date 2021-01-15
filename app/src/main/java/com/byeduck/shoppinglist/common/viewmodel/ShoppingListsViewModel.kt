@@ -5,8 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.byeduck.shoppinglist.model.request.CreateShoppingElementRequest
 import com.byeduck.shoppinglist.model.request.CreateShoppingListRequest
+import com.byeduck.shoppinglist.model.request.UpdateShoppingListRequest
 import com.byeduck.shoppinglist.model.view.ShoppingElement
-import com.byeduck.shoppinglist.model.view.ShoppingList
 import com.byeduck.shoppinglist.repository.ShoppingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -39,9 +39,9 @@ class ShoppingListsViewModel(application: Application) : AndroidViewModel(applic
     fun deleteElemById(listId: String, elemId: String) =
         ShoppingRepository.deleteListElementById(listId, elemId)
 
-    fun updateShoppingList(shoppingList: ShoppingList) {
+    fun updateShoppingList(listId: String, listName: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            ShoppingRepository.updateList(shoppingList)
+            ShoppingRepository.updateList(UpdateShoppingListRequest(listId, listName))
         }
     }
 

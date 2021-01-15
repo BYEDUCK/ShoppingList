@@ -32,8 +32,8 @@ class AddEditShoppingListActivity : AppCompatActivity() {
             val shoppingList = Gson().fromJson(shoppingListJson, ShoppingList::class.java)
             binding.shoppingListNameEditTxt.setText(shoppingList.name)
             binding.shoppingListEditSaveBtn.setOnClickListener {
-                shoppingList.name = binding.shoppingListNameEditTxt.text.toString()
-                viewModel.updateShoppingList(shoppingList)
+                val listName = binding.shoppingListNameEditTxt.text.toString()
+                viewModel.updateShoppingList(shoppingList.id, listName)
                 val intent = Intent(applicationContext, ShoppingListsActivity::class.java)
                 startActivity(intent)
             }

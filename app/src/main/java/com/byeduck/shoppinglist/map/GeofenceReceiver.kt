@@ -11,7 +11,7 @@ import com.byeduck.shoppinglist.common.converter.ShopConverter
 import com.byeduck.shoppinglist.model.PromotionModel
 import com.byeduck.shoppinglist.model.view.Promotion
 import com.byeduck.shoppinglist.repository.ShoppingRepository
-import com.byeduck.shoppinglist.shops.promo.AddEditViewPromotionActivity
+import com.byeduck.shoppinglist.shops.AddEditViewShopActivity
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import com.google.firebase.database.DataSnapshot
@@ -28,7 +28,7 @@ class GeofenceReceiver : BroadcastReceiver() {
         val triggeringGeofences = geoEvent.triggeringGeofences
         for (geofence in triggeringGeofences) {
             Log.d("GEOFENCE TRIGGERED", "id = ${geofence.requestId}")
-            val shopId = geofence.requestId.takeWhile { it != '-' }
+            val shopId = geofence.requestId.takeWhile { it != '_' }
 
             val userActivity: String = when (geoEvent.geofenceTransition) {
                 Geofence.GEOFENCE_TRANSITION_ENTER -> "enter"
@@ -49,8 +49,8 @@ class GeofenceReceiver : BroadcastReceiver() {
                         val activityIntent = if (snapshot.exists()) {
                             val promoModel = snapshot.getValue(PromotionModel::class.java) ?: return
                             promo = ShopConverter.promotionFromModel(promoModel)
-                            Intent(context, AddEditViewPromotionActivity::class.java).apply {
-                                putExtra("promoId", promoId)
+                            Intent(context, AddEditViewShopActivity::class.java).apply {
+                                putExtra("shopId", shopId)
                                 putExtra("view", true)
                             }
                         } else {

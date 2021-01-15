@@ -1,7 +1,7 @@
 package com.byeduck.shoppinglist.model.view
 
 data class Shop(
-    var id: String,
+    val id: String,
     var name: String,
     var description: String,
     val latitude: Double,

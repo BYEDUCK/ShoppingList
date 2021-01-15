@@ -1,20 +1,14 @@
 package com.byeduck.shoppinglist.repository
 
 import com.byeduck.shoppinglist.common.converter.ShopConverter
-import com.byeduck.shoppinglist.common.converter.ShoppingListConverter
 import com.byeduck.shoppinglist.login.LoginService
 import com.byeduck.shoppinglist.model.PromotionModel
 import com.byeduck.shoppinglist.model.ShopModel
 import com.byeduck.shoppinglist.model.ShoppingElementModel
 import com.byeduck.shoppinglist.model.ShoppingListModel
-import com.byeduck.shoppinglist.model.request.CreatePromoRequest
-import com.byeduck.shoppinglist.model.request.CreateShopRequest
-import com.byeduck.shoppinglist.model.request.CreateShoppingElementRequest
-import com.byeduck.shoppinglist.model.request.CreateShoppingListRequest
+import com.byeduck.shoppinglist.model.request.*
 import com.byeduck.shoppinglist.model.view.Promotion
-import com.byeduck.shoppinglist.model.view.Shop
 import com.byeduck.shoppinglist.model.view.ShoppingElement
-import com.byeduck.shoppinglist.model.view.ShoppingList
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.database.FirebaseDatabase
@@ -59,7 +53,7 @@ class ShoppingRepository {
         }
 
         fun insertShop(request: CreateShopRequest): Task<String> {
-            val shopId = generateShopId(request.shopName, request.latitude, request.longitude)
+            val shopId = UUID.randomUUID().toString()
             val taskCompletionSource = TaskCompletionSource<String>()
             return db.getReference(shopsRefPath)
                 .child(shopId)
@@ -130,30 +124,28 @@ class ShoppingRepository {
                 .setValue(model)
         }
 
-        fun updateShop(shop: Shop): Task<String> {
-            val shopId = generateShopId(shop.name, shop.latitude, shop.longitude)
-            if (shopId != shop.id) {
-                deleteShopById(shop.id)
-                shop.id = shopId
-            }
-            val model = ShopConverter.modelFromShop(shop)
-            val taskCompletionSource = TaskCompletionSource<String>()
+        fun updateShop(request: UpdateShopRequest): Task<Void> {
             return db.getReference(shopsRefPath)
-                .child(shopId)
-                .setValue(model)
-                .onSuccessTask {
-                    taskCompletionSource.setResult(shopId)
-                    taskCompletionSource.task
-                }
+                .child(request.shopId)
+                .updateChildren(
+                    mapOf(
+                        "name" to request.shopName,
+                        "description" to request.shopDescription,
+                        "radius" to request.radius
+                    )
+                )
         }
 
-        suspend fun updateList(shoppingList: ShoppingList) {
-            val listId = shoppingList.id
-            val model = ShoppingListConverter.modelFromList(shoppingList)
-            model.updatedAt = System.currentTimeMillis()
+        suspend fun updateList(request: UpdateShoppingListRequest) {
+            val updatedAt = System.currentTimeMillis()
             db.getReference(listsRefPath)
-                .child(listId)
-                .setValue(model)
+                .child(request.listId)
+                .updateChildren(
+                    mapOf(
+                        "name" to request.listName,
+                        "updatedAt" to updatedAt
+                    )
+                )
         }
 
         suspend fun updateElem(listId: String, shoppingElem: ShoppingElement) {
@@ -166,10 +158,6 @@ class ShoppingRepository {
 
         private fun getPromoRefPath(shopId: String) =
             "$shopsRefPath/$shopId/promos"
-
-        private fun generateShopId(shopName: String, latitude: Double, longitude: Double): String {
-            return abs(Objects.hash(shopName, latitude, longitude)).toString(16)
-        }
 
         private fun generatePromoId(shopId: String, date: String): String {
             return abs(Objects.hash(shopId, date)).toString(16)

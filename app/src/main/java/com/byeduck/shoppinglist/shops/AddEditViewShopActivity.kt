@@ -10,18 +10,24 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.byeduck.shoppinglist.R
+import com.byeduck.shoppinglist.common.converter.ShopConverter
 import com.byeduck.shoppinglist.common.viewmodel.ShopsViewModel
 import com.byeduck.shoppinglist.databinding.ActivityAddEditViewShopBinding
 import com.byeduck.shoppinglist.map.GeofenceReceiver
 import com.byeduck.shoppinglist.map.MapsFragment
 import com.byeduck.shoppinglist.map.ShopMarker
+import com.byeduck.shoppinglist.model.ShopModel
 import com.byeduck.shoppinglist.model.view.Shop
+import com.byeduck.shoppinglist.repository.ShoppingRepository
 import com.byeduck.shoppinglist.shops.promo.PromoActivity
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 
 class AddEditViewShopActivity : AppCompatActivity() {
@@ -43,8 +49,9 @@ class AddEditViewShopActivity : AppCompatActivity() {
         ).get(ShopsViewModel::class.java)
         setContentView(binding.root)
         val shopJson = intent?.getStringExtra("shop") ?: ""
+        val shopId = intent?.getStringExtra("shopId") ?: ""
         viewOnly = intent?.getBooleanExtra("view", false) ?: false
-        if (shopJson.isEmpty()) {
+        if (shopJson.isEmpty() && shopId.isEmpty()) {
             val latitude = intent?.getDoubleExtra("latitude", 0.0) ?: 0.0
             val longitude = intent?.getDoubleExtra("longitude", 0.0) ?: 0.0
             location = LatLng(latitude, longitude)
@@ -52,27 +59,26 @@ class AddEditViewShopActivity : AppCompatActivity() {
             binding.shopRadiusTxt.setText(getString(R.string.default_radius))
             displayMapFragment()
         } else {
-            val shop = Gson().fromJson(shopJson, Shop::class.java)
-            shopName = shop.name
-            shopId = shop.id
-            location = LatLng(shop.latitude, shop.longitude)
-            binding.apply {
-                shopNameTxt.setText(shop.name)
-                shopDescriptionTxt.setText(shop.description)
-                shopRadiusTxt.setText(shop.radius.toString())
-                locationTxt.text =
-                    getString(R.string.latitude_longitude, shop.latitude, shop.longitude)
+            if (shopJson.isNotEmpty()) {
+                val shop = Gson().fromJson(shopJson, Shop::class.java)
+                populateFields(shop)
+            } else {
+                ShoppingRepository.getDbShopsRef()
+                    .child(shopId)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val shopModel = snapshot.getValue(ShopModel::class.java) ?: return
+                            val shop = ShopConverter.shopFromModel(shopModel)
+                            populateFields(shop)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e("ADD/EDIT/VIEW SHOP", "ERROR", error.toException())
+                            goBackToShops()
+                        }
+
+                    })
             }
-            if (viewOnly) {
-                binding.apply {
-                    shopNameTxt.isEnabled = false
-                    shopDescriptionTxt.isEnabled = false
-                    shopRadiusTxt.isEnabled = false
-                    actionButtons.visibility = View.INVISIBLE
-                    promoBtn.visibility = View.VISIBLE
-                }
-            }
-            displayMapFragment(shop.name)
         }
     }
 
@@ -105,18 +111,11 @@ class AddEditViewShopActivity : AppCompatActivity() {
         } else {
             viewModel
                 .updateShop(
-                    Shop(
-                        shopId,
-                        shopName,
-                        description,
-                        location.latitude,
-                        location.longitude,
-                        radius
-                    )
+                    shopId, shopName, description, radius
                 )
                 .addOnSuccessListener {
                     removeGeofencesForShop(shopId) // remove old
-                    setGeoFence(it, radius)
+                    setGeoFence(shopId, radius)
                     goBackToShops()
                 }
                 .addOnFailureListener {
@@ -129,9 +128,32 @@ class AddEditViewShopActivity : AppCompatActivity() {
         goBackToShops()
     }
 
+    private fun populateFields(shop: Shop) {
+        shopName = shop.name
+        this.shopId = shop.id
+        location = LatLng(shop.latitude, shop.longitude)
+        binding.apply {
+            shopNameTxt.setText(shop.name)
+            shopDescriptionTxt.setText(shop.description)
+            shopRadiusTxt.setText(shop.radius.toString())
+            locationTxt.text =
+                getString(R.string.latitude_longitude, shop.latitude, shop.longitude)
+        }
+        if (viewOnly) {
+            binding.apply {
+                shopNameTxt.isEnabled = false
+                shopDescriptionTxt.isEnabled = false
+                shopRadiusTxt.isEnabled = false
+                actionButtons.visibility = View.INVISIBLE
+                promoBtn.visibility = View.VISIBLE
+            }
+        }
+        displayMapFragment(shop.name)
+    }
+
     private fun removeGeofencesForShop(shopId: String) {
-        val geoIdEnter = "$shopId-enter"
-        val geoIdExit = "$shopId-exit"
+        val geoIdEnter = "${shopId}_enter"
+        val geoIdExit = "${shopId}_exit"
         geoClient.removeGeofences(listOf(geoIdEnter, geoIdExit))
             .addOnSuccessListener {
                 Toast.makeText(
@@ -147,8 +169,8 @@ class AddEditViewShopActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun setGeoFence(shopId: String, radius: Double) {
-        val geoIdEnter = "$shopId-enter"
-        val geoIdExit = "$shopId-exit"
+        val geoIdEnter = "${shopId}_enter"
+        val geoIdExit = "${shopId}_exit"
         val geofenceEnter = Geofence.Builder().setRequestId(geoIdEnter)
             .setCircularRegion(location.latitude, location.longitude, radius.toFloat())
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
