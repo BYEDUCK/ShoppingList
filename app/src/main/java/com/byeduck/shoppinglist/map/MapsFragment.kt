@@ -1,5 +1,6 @@
 package com.byeduck.shoppinglist.map
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ class MapsFragment(
     private val shops: List<ShopMarker>
 ) : Fragment() {
 
+    @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
         shops.forEach {
             Log.d("MARKER ADD", "${it.shopName} -> ${it.location}")
@@ -33,7 +35,7 @@ class MapsFragment(
                     .radius(it.radius)
             )
         }
-
+        googleMap.isMyLocationEnabled = true
         // zoom to first marker
         // https://stackoverflow.com/questions/16458900/google-maps-api-v2-zooming-near-the-marker
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(shops[0].location, 15F))

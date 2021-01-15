@@ -22,22 +22,23 @@ class NotificationGenerator {
             context: Context
         ): Notification {
             val channelId = createNotificationChannel(context)
-            return if (promo == null)
-                NotificationCompat.Builder(context, channelId)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("You ${userActivity}ed shop")
-                    .setContentText("Sorry - no promotion for today")
-                    .setAutoCancel(true)
-                    .setContentIntent(pendingIntent)
-                    .build()
-            else
-                NotificationCompat.Builder(context, channelId)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("You ${userActivity}ed shop ${promo.shopName}")
-                    .setContentText("Promotion for today is ${promo.name}\n${promo.shortDescription}")
-                    .setAutoCancel(true)
-                    .setContentIntent(pendingIntent)
-                    .build()
+            val title = if (promo == null) {
+                "You ${userActivity}ed shop"
+            } else {
+                "You ${userActivity}ed shop ${promo.shopName}"
+            }
+            val text = if (promo == null) {
+                "Sorry - no promotion for today"
+            } else {
+                "Promotion for today is ${promo.name}\n${promo.shortDescription}"
+            }
+            return NotificationCompat.Builder(context, channelId)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .build()
         }
 
         private fun createNotificationChannel(context: Context): String {
