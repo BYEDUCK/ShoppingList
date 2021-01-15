@@ -23,6 +23,7 @@ import java.util.*
 class GeofenceReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
+        Log.d("GEOFENCE RECEIVER", "BROADCAST RECEIVED")
         val geoEvent = GeofencingEvent.fromIntent(intent)
         val triggeringGeofences = geoEvent.triggeringGeofences
         for (geofence in triggeringGeofences) {
@@ -39,7 +40,7 @@ class GeofenceReceiver : BroadcastReceiver() {
             }
             val promoId = Objects.hash(shopId, LocalDate.now().toString()).toString(16)
             Log.d("GEOFENCE RECEIVER", "PROMO ID: $promoId for today ${LocalDate.now()}")
-            ShoppingRepository.getDbPromosRef()
+            ShoppingRepository.getDbPromosRef(shopId)
                 .child(promoId)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {

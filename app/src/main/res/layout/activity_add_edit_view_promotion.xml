@@ -69,19 +69,6 @@
         android:lines="3"
         android:textAlignment="center" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:labelFor="@id/shopNamesSpinner"
-        android:text="@string/shop"
-        android:textAlignment="center" />
-
-    <Spinner
-        android:id="@+id/shopNamesSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center" />
-
     <LinearLayout
         android:id="@+id/actionButtons"
         android:layout_width="match_parent"

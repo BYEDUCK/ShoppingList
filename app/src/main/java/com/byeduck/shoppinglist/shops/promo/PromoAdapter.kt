@@ -19,10 +19,11 @@ import com.byeduck.shoppinglist.model.view.Promotion
 class PromoAdapter(
     private val context: Context,
     private val viewModel: PromoViewModel,
-    private val fragmentManager: FragmentManager
+    private val fragmentManager: FragmentManager,
+    private val shopId: String
 ) :
     FirebaseRecyclerViewAdapterBase<PromotionModel, Promotion, PromoAdapter.PromoViewHolder>(
-        viewModel.getDbPromosRef(),
+        viewModel.getDbPromosRef(shopId),
         { p1, p2 -> p1.date.compareTo(p2.date) },
         PromotionModel::class.java
     ) {
@@ -44,7 +45,6 @@ class PromoAdapter(
         val current = itemsToView[position]
         holder.binding.apply {
             promoNameTxt.text = current.name
-            promoShopNameTxt.text = current.shopName
             promoShortDescTxt.text = current.shortDescription
             promoDateTxt.text = current.date.toString()
         }
@@ -59,7 +59,7 @@ class PromoAdapter(
         holder.binding.root.setOnLongClickListener {
             val dialog = ShoppingActionsDialogFragment { action ->
                 when (action) {
-                    Action.DELETE -> viewModel.deletePromoById(current.id)
+                    Action.DELETE -> viewModel.deletePromoById(current.id, shopId)
                     Action.EDIT -> {
                         val intent = Intent(context, AddEditViewPromotionActivity::class.java)
                         intent.putExtra("promo", JsonConverter.gson().toJson(current))

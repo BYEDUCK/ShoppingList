@@ -15,6 +15,8 @@ class PromoActivity : AppCompatActivity() {
 
     private lateinit var viewModel: PromoViewModel
     private lateinit var binding: ActivityPromoBinding
+    private lateinit var shopId: String
+    private lateinit var shopName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +25,10 @@ class PromoActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(
             this, ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(PromoViewModel::class.java)
-        binding.promosRecyclerView.adapter = PromoAdapter(this, viewModel, supportFragmentManager)
+        shopId = intent?.getStringExtra("shopId") ?: ""
+        shopName = intent?.getStringExtra("shopName") ?: ""
+        binding.promosRecyclerView.adapter =
+            PromoAdapter(this, viewModel, supportFragmentManager, shopId)
         binding.promosRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.promosRecyclerView.addItemDecoration(
             DividerItemDecoration(
@@ -34,7 +39,10 @@ class PromoActivity : AppCompatActivity() {
     }
 
     fun addPromo(ignored: View) {
-        val addPromoIntent = Intent(this, AddEditViewPromotionActivity::class.java)
+        val addPromoIntent = Intent(this, AddEditViewPromotionActivity::class.java).apply {
+            putExtra("shopId", shopId)
+            putExtra("shopName", shopName)
+        }
         startActivity(addPromoIntent)
     }
 

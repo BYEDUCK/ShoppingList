@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.database.FirebaseDatabase
 import java.util.*
+import kotlin.math.abs
 
 class ShoppingRepository {
 
@@ -27,19 +28,22 @@ class ShoppingRepository {
         private val db = FirebaseDatabase.getInstance()
         private val listsRefPath = "lists/${user.id}"
         private val shopsRefPath = "shops/${user.id}"
-        private val promosRefPath = "promos/${user.id}"
 
         fun getDbListsRef() = db.getReference(listsRefPath)
 
-        fun getDbListElemRef(listId: String) = getDbListsRef().child(listId).child("elements")
+        fun getDbListElemRef(listId: String) = getDbListsRef()
+            .child(listId)
+            .child("elements")
 
         fun getDbShopsRef() = db.getReference(shopsRefPath)
 
-        fun getDbPromosRef() = db.getReference(promosRefPath)
+        fun getDbPromosRef(shopId: String) = getDbShopsRef()
+            .child(shopId)
+            .child("promos")
 
         fun insertPromo(request: CreatePromoRequest): Task<Void> {
             val promoId = generatePromoId(request.shopId, request.date)
-            return db.getReference(promosRefPath)
+            return getDbPromosRef(request.shopId)
                 .child(promoId)
                 .setValue(
                     PromotionModel(
@@ -100,8 +104,8 @@ class ShoppingRepository {
             return elemId
         }
 
-        fun deletePromoById(promoId: String) =
-            db.getReference(promosRefPath)
+        fun deletePromoById(promoId: String, shopId: String) =
+            db.getReference(getPromoRefPath(shopId))
                 .child(promoId)
                 .removeValue()
 
@@ -120,27 +124,27 @@ class ShoppingRepository {
                 .removeValue()
 
         fun updatePromo(promo: Promotion): Task<Void> {
-            val promoId = generatePromoId(promo.shopId, promo.date.toString())
-            if (promoId != promo.id) {
-                deletePromoById(promo.id)
-                promo.id = promoId
-            }
             val model = ShopConverter.modelFromPromotion(promo)
-            return db.getReference(promosRefPath)
-                .child(promoId)
+            return db.getReference(getPromoRefPath(promo.shopId))
+                .child(promo.id)
                 .setValue(model)
         }
 
-        fun updateShop(shop: Shop): Task<Void> {
+        fun updateShop(shop: Shop): Task<String> {
             val shopId = generateShopId(shop.name, shop.latitude, shop.longitude)
             if (shopId != shop.id) {
                 deleteShopById(shop.id)
                 shop.id = shopId
             }
             val model = ShopConverter.modelFromShop(shop)
+            val taskCompletionSource = TaskCompletionSource<String>()
             return db.getReference(shopsRefPath)
                 .child(shopId)
                 .setValue(model)
+                .onSuccessTask {
+                    taskCompletionSource.setResult(shopId)
+                    taskCompletionSource.task
+                }
         }
 
         suspend fun updateList(shoppingList: ShoppingList) {
@@ -160,12 +164,15 @@ class ShoppingRepository {
         private fun getElementsRefPath(listId: String, elemId: String) =
             "$listsRefPath/$listId/elements/$elemId"
 
+        private fun getPromoRefPath(shopId: String) =
+            "$shopsRefPath/$shopId/promos"
+
         private fun generateShopId(shopName: String, latitude: Double, longitude: Double): String {
-            return Objects.hash(shopName, latitude, longitude).toString(16)
+            return abs(Objects.hash(shopName, latitude, longitude)).toString(16)
         }
 
         private fun generatePromoId(shopId: String, date: String): String {
-            return Objects.hash(shopId, date).toString(16)
+            return abs(Objects.hash(shopId, date)).toString(16)
         }
     }
 }

@@ -8,9 +8,10 @@ import com.byeduck.shoppinglist.repository.ShoppingRepository
 
 class PromoViewModel(application: Application) : AndroidViewModel(application) {
 
-    fun getDbPromosRef() = ShoppingRepository.getDbPromosRef()
+    fun getDbPromosRef(shopId: String) = ShoppingRepository.getDbPromosRef(shopId)
 
-    fun deletePromoById(promoId: String) = ShoppingRepository.deletePromoById(promoId)
+    fun deletePromoById(promoId: String, shopId: String) =
+        ShoppingRepository.deletePromoById(promoId, shopId)
 
     fun addPromo(
         promoName: String,
