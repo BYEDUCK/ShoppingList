@@ -1,4 +1,4 @@
-package com.byeduck.shoppinglist.model.request
+package com.byeduck.shoppinglist.model.request.create
 
 data class CreateShopRequest(
     val shopName: String,

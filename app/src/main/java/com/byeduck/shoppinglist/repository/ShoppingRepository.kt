@@ -6,7 +6,12 @@ import com.byeduck.shoppinglist.model.PromotionModel
 import com.byeduck.shoppinglist.model.ShopModel
 import com.byeduck.shoppinglist.model.ShoppingElementModel
 import com.byeduck.shoppinglist.model.ShoppingListModel
-import com.byeduck.shoppinglist.model.request.*
+import com.byeduck.shoppinglist.model.request.create.CreatePromoRequest
+import com.byeduck.shoppinglist.model.request.create.CreateShopRequest
+import com.byeduck.shoppinglist.model.request.create.CreateShoppingElementRequest
+import com.byeduck.shoppinglist.model.request.create.CreateShoppingListRequest
+import com.byeduck.shoppinglist.model.request.update.UpdateShopRequest
+import com.byeduck.shoppinglist.model.request.update.UpdateShoppingListRequest
 import com.byeduck.shoppinglist.model.view.Promotion
 import com.byeduck.shoppinglist.model.view.ShoppingElement
 import com.google.android.gms.tasks.Task

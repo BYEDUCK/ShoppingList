@@ -2,8 +2,8 @@ package com.byeduck.shoppinglist.common.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.byeduck.shoppinglist.model.request.CreateShopRequest
-import com.byeduck.shoppinglist.model.request.UpdateShopRequest
+import com.byeduck.shoppinglist.model.request.create.CreateShopRequest
+import com.byeduck.shoppinglist.model.request.update.UpdateShopRequest
 import com.byeduck.shoppinglist.repository.ShoppingRepository
 import com.google.android.gms.maps.model.LatLng
 

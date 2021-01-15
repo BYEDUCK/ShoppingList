@@ -2,7 +2,7 @@ package com.byeduck.shoppinglist.common.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.byeduck.shoppinglist.model.request.CreatePromoRequest
+import com.byeduck.shoppinglist.model.request.create.CreatePromoRequest
 import com.byeduck.shoppinglist.model.view.Promotion
 import com.byeduck.shoppinglist.repository.ShoppingRepository
 

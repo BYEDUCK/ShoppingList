@@ -9,7 +9,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.byeduck.shoppinglist.R
 import com.byeduck.shoppinglist.model.view.Promotion
-import java.util.*
 
 class NotificationGenerator {
 
@@ -42,7 +41,7 @@ class NotificationGenerator {
         }
 
         private fun createNotificationChannel(context: Context): String {
-            val channelId = UUID.randomUUID().toString()
+            val channelId = "SHOPPING-LIST-NOTI-CHANNEL"
             val notificationChannel = NotificationChannel(
                 channelId,
                 "Geofence_Noti",

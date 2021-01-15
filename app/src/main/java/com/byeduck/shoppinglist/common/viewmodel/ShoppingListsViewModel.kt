@@ -3,9 +3,9 @@ package com.byeduck.shoppinglist.common.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.byeduck.shoppinglist.model.request.CreateShoppingElementRequest
-import com.byeduck.shoppinglist.model.request.CreateShoppingListRequest
-import com.byeduck.shoppinglist.model.request.UpdateShoppingListRequest
+import com.byeduck.shoppinglist.model.request.create.CreateShoppingElementRequest
+import com.byeduck.shoppinglist.model.request.create.CreateShoppingListRequest
+import com.byeduck.shoppinglist.model.request.update.UpdateShoppingListRequest
 import com.byeduck.shoppinglist.model.view.ShoppingElement
 import com.byeduck.shoppinglist.repository.ShoppingRepository
 import kotlinx.coroutines.Dispatchers
