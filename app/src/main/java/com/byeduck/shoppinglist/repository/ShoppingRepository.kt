@@ -18,7 +18,6 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.database.FirebaseDatabase
 import java.util.*
-import kotlin.math.abs
 
 class ShoppingRepository {
 
@@ -62,28 +61,18 @@ class ShoppingRepository {
             val taskCompletionSource = TaskCompletionSource<String>()
             return db.getReference(shopsRefPath)
                 .child(shopId)
-                .get()
-                .onSuccessTask {
-                    if (!it.exists()) {
-                        db.getReference(shopsRefPath)
-                            .child(shopId)
-                            .setValue(
-                                ShopModel(
-                                    shopId,
-                                    request.shopName,
-                                    request.description,
-                                    request.latitude,
-                                    request.longitude,
-                                    request.radius
-                                )
-                            ).onSuccessTask {
-                                taskCompletionSource.setResult(shopId)
-                                taskCompletionSource.task
-                            }
-                    } else {
-                        taskCompletionSource.setException(IllegalArgumentException("Shop already exists"))
-                        taskCompletionSource.task
-                    }
+                .setValue(
+                    ShopModel(
+                        shopId,
+                        request.shopName,
+                        request.description,
+                        request.latitude,
+                        request.longitude,
+                        request.radius
+                    )
+                ).onSuccessTask {
+                    taskCompletionSource.setResult(shopId)
+                    taskCompletionSource.task
                 }
         }
 
@@ -165,7 +154,9 @@ class ShoppingRepository {
             "$shopsRefPath/$shopId/promos"
 
         private fun generatePromoId(shopId: String, date: String): String {
-            return abs(Objects.hash(shopId, date)).toString(16)
+            val hash = Objects.hash(shopId, date)
+            val positiveHash = if (hash >= 0) hash else hash + Int.MAX_VALUE
+            return positiveHash.toString(16)
         }
     }
 }
