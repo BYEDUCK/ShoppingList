@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.byeduck.shoppinglist.MainActivity
 import com.byeduck.shoppinglist.R
 import com.byeduck.shoppinglist.common.viewmodel.ShopsViewModel
-import com.byeduck.shoppinglist.databinding.ActivityShopsMapBinding
+import com.byeduck.shoppinglist.databinding.ActivityFavShopsMapBinding
 import com.byeduck.shoppinglist.map.MapsFragment
 import com.byeduck.shoppinglist.map.ShopMarker
 import com.byeduck.shoppinglist.model.ShopModel
@@ -18,11 +18,11 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
 
-class ShopsMapActivity : AppCompatActivity() {
+class FavShopsMapActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityShopsMapBinding.inflate(layoutInflater)
+        val binding = ActivityFavShopsMapBinding.inflate(layoutInflater)
         val viewModel = ViewModelProvider(
             this, ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(ShopsViewModel::class.java)
@@ -30,7 +30,7 @@ class ShopsMapActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val shops = snapshot.getValue(object :
                     GenericTypeIndicator<Map<String, ShopModel>>() {})?.values ?: return
-                displayMapFragment(shops)
+                displayMapFragment(shops.filter { it.favourite })
             }
 
             override fun onCancelled(error: DatabaseError) {

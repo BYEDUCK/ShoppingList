@@ -12,11 +12,23 @@ sealed class ShopConverter {
     companion object {
 
         fun modelFromShop(shop: Shop) = ShopModel(
-            shop.id, shop.name, shop.description, shop.latitude, shop.longitude, shop.radius
+            shop.id,
+            shop.name,
+            shop.description,
+            shop.latitude,
+            shop.longitude,
+            shop.radius,
+            shop.isFavourite
         )
 
         fun shopFromModel(model: ShopModel) = Shop(
-            model.id, model.name, model.description, model.latitude, model.longitude, model.radius
+            model.id,
+            model.name,
+            model.description,
+            model.latitude,
+            model.longitude,
+            model.radius,
+            model.favourite
         )
 
         fun modelFromPromotion(promo: Promotion) = PromotionModel(

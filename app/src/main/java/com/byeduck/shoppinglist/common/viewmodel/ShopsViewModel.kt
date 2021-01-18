@@ -11,13 +11,40 @@ class ShopsViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getDbShopsListRef() = ShoppingRepository.getDbShopsRef()
 
-    fun addShop(name: String, description: String, location: LatLng, radius: Double) =
+    fun addShop(
+        name: String,
+        description: String,
+        location: LatLng,
+        radius: Double,
+        isFavourite: Boolean
+    ) =
         ShoppingRepository.insertShop(
-            CreateShopRequest(name, description, location.latitude, location.longitude, radius)
+            CreateShopRequest(
+                name,
+                description,
+                location.latitude,
+                location.longitude,
+                radius,
+                isFavourite
+            )
         )
 
-    fun updateShop(shopId: String, shopName: String, shopDescription: String, radius: Double) =
-        ShoppingRepository.updateShop(UpdateShopRequest(shopId, shopName, shopDescription, radius))
+    fun updateShop(
+        shopId: String,
+        shopName: String,
+        shopDescription: String,
+        radius: Double,
+        isFavourite: Boolean
+    ) =
+        ShoppingRepository.updateShop(
+            UpdateShopRequest(
+                shopId,
+                shopName,
+                shopDescription,
+                radius,
+                isFavourite
+            )
+        )
 
     fun deleteShopById(shopId: String) = ShoppingRepository.deleteShopById(shopId)
 

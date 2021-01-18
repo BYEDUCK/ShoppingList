@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.byeduck.shoppinglist.R
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -36,11 +37,15 @@ class MapsFragment(
             )
         }
         googleMap.isMyLocationEnabled = true
-        // zoom to first marker
-        // https://stackoverflow.com/questions/16458900/google-maps-api-v2-zooming-near-the-marker
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(shops[0].location, 15F))
-        googleMap.animateCamera(CameraUpdateFactory.zoomIn())
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15F), 2000, null)
+        if (shops.isNotEmpty()) {
+            // zoom to first marker
+            // https://stackoverflow.com/questions/16458900/google-maps-api-v2-zooming-near-the-marker
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(shops[0].location, 15F))
+            googleMap.animateCamera(CameraUpdateFactory.zoomIn())
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(15F), 2000, null)
+        } else {
+            Toast.makeText(context, "No shops to show", Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onCreateView(

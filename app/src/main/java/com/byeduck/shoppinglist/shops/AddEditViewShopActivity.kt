@@ -98,9 +98,10 @@ class AddEditViewShopActivity : AppCompatActivity() {
         val shopName = binding.shopNameTxt.text.toString()
         val description = binding.shopDescriptionTxt.text.toString()
         val radius = binding.shopRadiusTxt.text.toString().toDouble()
+        val isFavourite = binding.isFavCheckbox.isChecked
         if (shopId.isEmpty()) {
             viewModel
-                .addShop(shopName, description, location, radius)
+                .addShop(shopName, description, location, radius, isFavourite)
                 .addOnSuccessListener {
                     setGeoFence(it, radius)
                     goBackToShops()
@@ -111,7 +112,7 @@ class AddEditViewShopActivity : AppCompatActivity() {
         } else {
             viewModel
                 .updateShop(
-                    shopId, shopName, description, radius
+                    shopId, shopName, description, radius, isFavourite
                 )
                 .addOnSuccessListener {
                     removeGeofencesForShop(shopId) // remove old
@@ -138,12 +139,14 @@ class AddEditViewShopActivity : AppCompatActivity() {
             shopRadiusTxt.setText(shop.radius.toString())
             locationTxt.text =
                 getString(R.string.latitude_longitude, shop.latitude, shop.longitude)
+            isFavCheckbox.isChecked = shop.isFavourite
         }
         if (viewOnly) {
             binding.apply {
                 shopNameTxt.isEnabled = false
                 shopDescriptionTxt.isEnabled = false
                 shopRadiusTxt.isEnabled = false
+                isFavCheckbox.isEnabled = false
                 actionButtons.visibility = View.INVISIBLE
                 promoBtn.visibility = View.VISIBLE
             }

@@ -10,7 +10,7 @@ import com.byeduck.shoppinglist.lists.ShoppingListsActivity
 import com.byeduck.shoppinglist.login.LoggedInUser
 import com.byeduck.shoppinglist.login.LoginActivity
 import com.byeduck.shoppinglist.login.LoginService
-import com.byeduck.shoppinglist.map.shops.ShopsMapActivity
+import com.byeduck.shoppinglist.map.shops.FavShopsMapActivity
 import com.byeduck.shoppinglist.options.OptionsActivity
 import com.byeduck.shoppinglist.shops.ShopsActivity
 import kotlinx.coroutines.GlobalScope
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun goToMap(ignored: View) {
-        val goToShopsMapIntent = Intent(this, ShopsMapActivity::class.java)
+        val goToShopsMapIntent = Intent(this, FavShopsMapActivity::class.java)
         startActivity(goToShopsMapIntent)
     }
 

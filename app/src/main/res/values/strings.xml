@@ -22,7 +22,7 @@
     <string name="shops">SHOPS</string>
     <string name="add_current_location">ADD CURRENT LOCATION</string>
     <string name="title_activity_maps">Map</string>
-    <string name="view_your_shops">VIEW YOUR SHOPS</string>
+    <string name="view_your_shops">VIEW FAVOURITE SHOPS</string>
     <string name="shop_name">Shop name</string>
     <string name="description">Description</string>
     <string name="latitude_longitude_fill">latitude | longitude</string>
@@ -37,4 +37,5 @@
     <string name="date">Date</string>
     <string name="shop">Shop</string>
     <string name="promotions">PROMOTIONS</string>
+    <string name="favourite">Favourite</string>
 </resources>

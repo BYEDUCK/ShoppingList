@@ -9,6 +9,7 @@ class ShopModel(
     var description: String = "NO-DESCRIPTION",
     var latitude: Double = 0.0,
     var longitude: Double = 0.0,
-    var radius: Double = 50.0
+    var radius: Double = 50.0,
+    var favourite: Boolean = false
 ) : Model(id) {
 }

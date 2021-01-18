@@ -68,7 +68,8 @@ class ShoppingRepository {
                         request.description,
                         request.latitude,
                         request.longitude,
-                        request.radius
+                        request.radius,
+                        request.isFavourite
                     )
                 ).onSuccessTask {
                     taskCompletionSource.setResult(shopId)
@@ -125,7 +126,8 @@ class ShoppingRepository {
                     mapOf(
                         "name" to request.shopName,
                         "description" to request.shopDescription,
-                        "radius" to request.radius
+                        "radius" to request.radius,
+                        "favourite" to request.isFavourite
                     )
                 )
         }
