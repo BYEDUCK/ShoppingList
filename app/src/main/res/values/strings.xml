@@ -38,4 +38,6 @@
     <string name="shop">Shop</string>
     <string name="promotions">PROMOTIONS</string>
     <string name="favourite">Favourite</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>
