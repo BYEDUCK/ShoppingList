@@ -40,4 +40,10 @@
     <string name="favourite">Favourite</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="url">URL</string>
+    <string name="go">GO</string>
+    <string name="go_to_page">GO TO PAGE</string>
+    <string name="image">IMAGE</string>
+    <string name="change_photo">CHANGE PHOTO</string>
+    <string name="apply">APPLY</string>
 </resources>
