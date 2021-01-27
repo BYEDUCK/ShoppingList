@@ -31,7 +31,7 @@ class AppWidgetConfigActivity : AppCompatActivity() {
         if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish()
         }
-        sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences(WIDGET_PREFS_NAME, MODE_PRIVATE)
         val url = sharedPreferences.getString(getUrlId(widgetId), "https://byeduck.com")
         binding.urlTxt.setText(url)
     }
@@ -61,9 +61,41 @@ class AppWidgetConfigActivity : AppCompatActivity() {
             changeImgBroadcast,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
+        val changeSongBroadcast = Intent().apply {
+            action = "com.byeduck.shoppinglist.widget.CHANGE_SONG"
+            component = ComponentName(
+                "com.byeduck.shoppinglist",
+                "com.byeduck.shoppinglist.widget.ShoppingListWidget"
+            )
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+        }
+        val changeSongPendingIntent = PendingIntent.getBroadcast(
+            this,
+            2,
+            changeSongBroadcast,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val startStopSongBroadcast = Intent().apply {
+            action = "com.byeduck.shoppinglist.widget.START_STOP_SONG"
+            component = ComponentName(
+                "com.byeduck.shoppinglist",
+                "com.byeduck.shoppinglist.widget.ShoppingListWidget"
+            )
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+        }
+        val startStopSongPendingIntent = PendingIntent.getBroadcast(
+            this,
+            3,
+            startStopSongBroadcast,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
         remoteViews.setOnClickPendingIntent(R.id.goToPageBtn, goToPagePendingIntent)
         remoteViews.setOnClickPendingIntent(R.id.changeImgBtn, changeImgPendingIntent)
+        remoteViews.setOnClickPendingIntent(R.id.changeSongBtn, changeSongPendingIntent)
+        remoteViews.setOnClickPendingIntent(R.id.startStopSongBtn, startStopSongPendingIntent)
         appWidgetManager.updateAppWidget(widgetId, remoteViews)
+
         sharedPreferences.edit()
             .putString(getUrlId(widgetId), url)
             .apply()
@@ -72,6 +104,11 @@ class AppWidgetConfigActivity : AppCompatActivity() {
         }
         setResult(RESULT_OK, resultValue)
         finish()
+    }
+
+    override fun onBackPressed() {
+        finish()
+        super.onBackPressed()
     }
 
     private fun getUrlId(appWidgetId: Int) = "${appWidgetId}_URL"

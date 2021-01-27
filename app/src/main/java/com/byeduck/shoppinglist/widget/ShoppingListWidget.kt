@@ -14,6 +14,10 @@ import com.byeduck.shoppinglist.R
  */
 class ShoppingListWidget : AppWidgetProvider() {
 
+    private val widgetImages = arrayOf(
+        R.drawable.photo1, R.drawable.photo2, R.drawable.photo3
+    )
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -35,22 +39,38 @@ class ShoppingListWidget : AppWidgetProvider() {
         super.onReceive(context, intent)
         val widgetId = intent?.extras?.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID) ?: return
         val sharedPrefs =
-            context?.getSharedPreferences(PREFS_NAME, MODE_PRIVATE) ?: return
+            context?.getSharedPreferences(WIDGET_PREFS_NAME, MODE_PRIVATE) ?: return
         if (intent.action.equals("com.byeduck.shoppinglist.widget.CHANGE_IMAGE")) {
             val imgPrefId = getImgPrefId(widgetId)
-            val prevImg = sharedPrefs.getInt(imgPrefId, R.drawable.photo1)
-            val currentImg =
-                if (prevImg == R.drawable.photo1) R.drawable.photo2 else R.drawable.photo1
+            val prevImgId = sharedPrefs.getInt(imgPrefId, 0)
+            val currentId = (prevImgId + 1) % widgetImages.size
             val appWidgetManager = AppWidgetManager.getInstance(context)
-            updateAppWidgetImage(context, appWidgetManager, widgetId, currentImg)
+            updateAppWidgetImage(context, appWidgetManager, widgetId, widgetImages[currentId])
             sharedPrefs.edit()
-                .putInt(imgPrefId, currentImg)
+                .putInt(imgPrefId, currentId)
                 .apply()
+        } else if (intent.action.equals("com.byeduck.shoppinglist.widget.CHANGE_SONG")) {
+            val serviceIntent = Intent(context, SongService::class.java).apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                putExtra("SERVICE_ACTION", "CHANGE")
+            }
+            context.startForegroundService(serviceIntent)
+        } else if (intent.action.equals("com.byeduck.shoppinglist.widget.START_STOP_SONG")) {
+            val serviceIntent = Intent(context, SongService::class.java).apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                putExtra("SERVICE_ACTION", "START_STOP")
+            }
+            context.startService(serviceIntent)
         }
     }
 
     private fun getImgPrefId(widgetId: Int) = "${widgetId}_IMG"
 }
+
+internal class Song(
+    val resourceId: Int,
+    val name: String
+)
 
 internal fun updateAppWidgetImage(
     context: Context,

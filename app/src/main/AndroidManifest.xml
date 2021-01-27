@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.byeduck.shoppinglist">
+
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -28,6 +29,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShoppingList">
+        <service
+            android:name=".widget.SongService"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity android:name=".widget.AppWidgetConfigActivity">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -38,6 +44,8 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.byeduck.shoppinglist.widget.CHANGE_IMAGE" />
+                <action android:name="com.byeduck.shoppinglist.widget.CHANGE_SONG" />
+                <action android:name="com.byeduck.shoppinglist.widget.START_STOP_SONG" />
             </intent-filter>
 
             <meta-data
