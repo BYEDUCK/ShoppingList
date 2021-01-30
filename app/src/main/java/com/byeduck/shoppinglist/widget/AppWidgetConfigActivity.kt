@@ -47,12 +47,13 @@ class AppWidgetConfigActivity : AppCompatActivity() {
             0,
             intent, PendingIntent.FLAG_UPDATE_CURRENT
         )
+        val myComponent = ComponentName(
+            "com.byeduck.shoppinglist",
+            "com.byeduck.shoppinglist.widget.ShoppingListWidget"
+        )
         val changeImgBroadcast = Intent().apply {
             action = "com.byeduck.shoppinglist.widget.CHANGE_IMAGE"
-            component = ComponentName(
-                "com.byeduck.shoppinglist",
-                "com.byeduck.shoppinglist.widget.ShoppingListWidget"
-            )
+            component = myComponent
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         }
         val changeImgPendingIntent = PendingIntent.getBroadcast(
@@ -63,10 +64,7 @@ class AppWidgetConfigActivity : AppCompatActivity() {
         )
         val changeSongBroadcast = Intent().apply {
             action = "com.byeduck.shoppinglist.widget.CHANGE_SONG"
-            component = ComponentName(
-                "com.byeduck.shoppinglist",
-                "com.byeduck.shoppinglist.widget.ShoppingListWidget"
-            )
+            component = myComponent
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         }
         val changeSongPendingIntent = PendingIntent.getBroadcast(
@@ -77,10 +75,7 @@ class AppWidgetConfigActivity : AppCompatActivity() {
         )
         val startStopSongBroadcast = Intent().apply {
             action = "com.byeduck.shoppinglist.widget.START_STOP_SONG"
-            component = ComponentName(
-                "com.byeduck.shoppinglist",
-                "com.byeduck.shoppinglist.widget.ShoppingListWidget"
-            )
+            component = myComponent
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         }
         val startStopSongPendingIntent = PendingIntent.getBroadcast(
@@ -89,11 +84,33 @@ class AppWidgetConfigActivity : AppCompatActivity() {
             startStopSongBroadcast,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
+        val pauseResumeSongBroadcast = Intent().apply {
+            action = "com.byeduck.shoppinglist.widget.PAUSE_RESUME_SONG"
+            component = myComponent
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+        }
+        val pauseResumePendingIntent = PendingIntent.getBroadcast(
+            this,
+            4,
+            pauseResumeSongBroadcast,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
 
         remoteViews.setOnClickPendingIntent(R.id.goToPageBtn, goToPagePendingIntent)
         remoteViews.setOnClickPendingIntent(R.id.changeImgBtn, changeImgPendingIntent)
         remoteViews.setOnClickPendingIntent(R.id.changeSongBtn, changeSongPendingIntent)
         remoteViews.setOnClickPendingIntent(R.id.startStopSongBtn, startStopSongPendingIntent)
+        remoteViews.setOnClickPendingIntent(R.id.pauseResumeSongBtn, pauseResumePendingIntent)
+        remoteViews.setRemoteAdapter(
+            R.id.favouriteShopsList,
+            Intent(this, FavouriteShopsRemoteViewsService::class.java).apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                // https://android.googlesource.com/platform/development/+/master/samples/StackWidget/src/com/example/android/stackwidget/StackWidgetProvider.java
+                // When intents are compared, the extras are ignored, so we need to embed the extras
+                // into the data so that the extras will not be ignored.
+                data = Uri.parse(this.toUri(Intent.URI_INTENT_SCHEME))
+            }
+        )
         appWidgetManager.updateAppWidget(widgetId, remoteViews)
 
         sharedPreferences.edit()

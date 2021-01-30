@@ -46,6 +46,7 @@
                 <action android:name="com.byeduck.shoppinglist.widget.CHANGE_IMAGE" />
                 <action android:name="com.byeduck.shoppinglist.widget.CHANGE_SONG" />
                 <action android:name="com.byeduck.shoppinglist.widget.START_STOP_SONG" />
+                <action android:name="com.byeduck.shoppinglist.widget.PAUSE_RESUME_SONG" />
             </intent-filter>
 
             <meta-data

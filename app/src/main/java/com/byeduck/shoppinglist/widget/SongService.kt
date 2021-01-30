@@ -2,57 +2,63 @@ package com.byeduck.shoppinglist.widget
 
 import android.app.Service
 import android.appwidget.AppWidgetManager
+import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.IBinder
+import android.widget.RemoteViews
 import android.widget.Toast
 import com.byeduck.shoppinglist.R
 
-internal var mediaPlayer: MediaPlayer? = null
-
+// TODO: try to replace with job scheduler
 class SongService : Service() {
 
     private val widgetSongs = arrayOf(
         Song(R.raw.song1, "Billy Jean"), Song(R.raw.song2, "Smooth Criminal")
     )
 
-//    companion object {
-//        private var mediaPlayer: MediaPlayer? = null
-//    }
+    companion object {
+        private var mediaPlayer: MediaPlayer? = null
+
+        fun getMediaPlayer(context: Context, songId: Int) = MediaPlayer.create(context, songId)
+    }
 
     override fun onBind(intent: Intent): IBinder {
         TODO("Return the communication channel to the service.")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val action = intent?.extras?.getString("SERVICE_ACTION", "START_STOP")
-        var mp = mediaPlayer
+        val action = intent?.extras?.getString(EXTRA_SERVICE_ACTION, SERVICE_ACTION_START_STOP)
+        val widgetId = intent?.extras?.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID)
+            ?: AppWidgetManager.INVALID_APPWIDGET_ID
+        val sharedPreferences =
+            applicationContext.getSharedPreferences(WIDGET_PREFS_NAME, MODE_PRIVATE)
+        val songPrefId = getSongPrefId(widgetId)
+        val songId = sharedPreferences.getInt(songPrefId, 0)
         when (action) {
-            "START_STOP" -> {
-                if (mp != null) {
-                    if (mp.isPlaying) mp.pause() else mp.start()
-                }
+            SERVICE_ACTION_PAUSE_RESUME -> {
+                val mp = mediaPlayer ?: return START_NOT_STICKY
+                if (mp.isPlaying) mp.pause() else mp.start()
             }
-            "CHANGE" -> {
-                val widgetId = intent.extras?.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID)
-                    ?: AppWidgetManager.INVALID_APPWIDGET_ID
-                val songPrefId = getSongPrefId(widgetId)
-                val sharedPreferences =
-                    applicationContext.getSharedPreferences(WIDGET_PREFS_NAME, MODE_PRIVATE)
-                val prevSongId = sharedPreferences.getInt(songPrefId, -1)
-                val songId = (prevSongId + 1) % widgetSongs.size
-                mp?.stop()
-                mp = MediaPlayer.create(applicationContext, widgetSongs[songId].resourceId)
-                mp.setOnPreparedListener { mPlayer ->
-                    run {
-                        mPlayer.start()
-                        mediaPlayer = mPlayer
-                        sharedPreferences.edit()
-                            .putInt(songPrefId, songId)
-                            .apply()
-                    }
+            SERVICE_ACTION_START_STOP -> {
+                val mp = mediaPlayer ?: getMediaPlayer(
+                    applicationContext,
+                    widgetSongs[songId].resourceId
+                )
+                if (mp.isPlaying) mp.stop() else {
+                    mp.setOnPreparedListener { it.start() }
                 }
+                mediaPlayer = mp
             }
+            SERVICE_ACTION_CHANGE -> {
+                val nextSongId = (songId + 1) % widgetSongs.size
+                mediaPlayer?.stop()
+                updateSongTitle(nextSongId, widgetId)
+                sharedPreferences.edit()
+                    .putInt(songPrefId, nextSongId)
+                    .apply()
+            }
+            else -> return START_NOT_STICKY
         }
         return START_STICKY
     }
@@ -62,6 +68,12 @@ class SongService : Service() {
         mediaPlayer?.stop()
     }
 
+    private fun updateSongTitle(songId: Int, widgetId: Int) {
+        val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
+        val remoteViews = RemoteViews(applicationContext.packageName, R.layout.shopping_list_widget)
+        remoteViews.setTextViewText(R.id.songTitleTxt, widgetSongs[songId].name)
+        appWidgetManager.updateAppWidget(widgetId, remoteViews)
+    }
 
     private fun getSongPrefId(widgetId: Int) = "${widgetId}_SNG"
 

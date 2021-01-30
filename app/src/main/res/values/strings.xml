@@ -47,5 +47,8 @@
     <string name="change_photo">CHANGE PHOTO</string>
     <string name="apply">APPLY</string>
     <string name="change_song">CHANGE SONG</string>
-    <string name="start_stop">START/STOP</string>
+    <string name="pause_resume">PAUSE/RESUME SONG</string>
+    <string name="loading">LOADING...</string>
+    <string name="song_title">Song title</string>
+    <string name="start_stop_song">START/STOP SONG</string>
 </resources>

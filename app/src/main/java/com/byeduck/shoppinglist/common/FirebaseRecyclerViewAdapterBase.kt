@@ -11,7 +11,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.concurrent.ConcurrentSkipListSet
+import java.util.*
+import kotlin.collections.HashSet
 
 abstract class FirebaseRecyclerViewAdapterBase<ModelType, ViewType, ViewHolderType>(
     private val dbRef: DatabaseReference,
@@ -19,8 +20,8 @@ abstract class FirebaseRecyclerViewAdapterBase<ModelType, ViewType, ViewHolderTy
     private val modelClass: Class<ModelType>
 ) : RecyclerView.Adapter<ViewHolderType>() where ModelType : Model, ViewHolderType : RecyclerView.ViewHolder {
 
-    private val idsRegistry = ConcurrentSkipListSet<String>()
-    private val items = ConcurrentSkipListSet(comparator)
+    private val idsRegistry = HashSet<String>()
+    private val items = TreeSet(comparator)
     var itemsToView: List<ViewType> = emptyList()
 
     private val dbListener = object : ChildEventListener {

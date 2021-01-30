@@ -7,6 +7,7 @@ import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.util.Log
 import android.widget.RemoteViews
+import android.widget.Toast
 import com.byeduck.shoppinglist.R
 
 /**
@@ -40,27 +41,41 @@ class ShoppingListWidget : AppWidgetProvider() {
         val widgetId = intent?.extras?.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID) ?: return
         val sharedPrefs =
             context?.getSharedPreferences(WIDGET_PREFS_NAME, MODE_PRIVATE) ?: return
-        if (intent.action.equals("com.byeduck.shoppinglist.widget.CHANGE_IMAGE")) {
-            val imgPrefId = getImgPrefId(widgetId)
-            val prevImgId = sharedPrefs.getInt(imgPrefId, 0)
-            val currentId = (prevImgId + 1) % widgetImages.size
-            val appWidgetManager = AppWidgetManager.getInstance(context)
-            updateAppWidgetImage(context, appWidgetManager, widgetId, widgetImages[currentId])
-            sharedPrefs.edit()
-                .putInt(imgPrefId, currentId)
-                .apply()
-        } else if (intent.action.equals("com.byeduck.shoppinglist.widget.CHANGE_SONG")) {
-            val serviceIntent = Intent(context, SongService::class.java).apply {
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-                putExtra("SERVICE_ACTION", "CHANGE")
+        when {
+            intent.action.equals("com.byeduck.shoppinglist.widget.CHANGE_IMAGE") -> {
+                val imgPrefId = getImgPrefId(widgetId)
+                val prevImgId = sharedPrefs.getInt(imgPrefId, 0)
+                val currentId = (prevImgId + 1) % widgetImages.size
+                val appWidgetManager = AppWidgetManager.getInstance(context)
+                updateAppWidgetImage(context, appWidgetManager, widgetId, widgetImages[currentId])
+                sharedPrefs.edit()
+                    .putInt(imgPrefId, currentId)
+                    .apply()
             }
-            context.startForegroundService(serviceIntent)
-        } else if (intent.action.equals("com.byeduck.shoppinglist.widget.START_STOP_SONG")) {
-            val serviceIntent = Intent(context, SongService::class.java).apply {
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-                putExtra("SERVICE_ACTION", "START_STOP")
+            intent.action.equals("com.byeduck.shoppinglist.widget.CHANGE_SONG") -> {
+                Toast.makeText(context, "CHANGE", Toast.LENGTH_SHORT).show()
+                val serviceIntent = Intent(context, SongService::class.java).apply {
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                    putExtra(EXTRA_SERVICE_ACTION, SERVICE_ACTION_CHANGE)
+                }
+                context.startForegroundService(serviceIntent)
             }
-            context.startService(serviceIntent)
+            intent.action.equals("com.byeduck.shoppinglist.widget.START_STOP_SONG") -> {
+                Toast.makeText(context, "START/STOP", Toast.LENGTH_SHORT).show()
+                val serviceIntent = Intent(context, SongService::class.java).apply {
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                    putExtra(EXTRA_SERVICE_ACTION, SERVICE_ACTION_START_STOP)
+                }
+                context.startForegroundService(serviceIntent)
+            }
+            intent.action.equals("com.byeduck.shoppinglist.widget.PAUSE_RESUME_SONG") -> {
+                Toast.makeText(context, "PAUSE/RESUME", Toast.LENGTH_SHORT).show()
+                val serviceIntent = Intent(context, SongService::class.java).apply {
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                    putExtra(EXTRA_SERVICE_ACTION, SERVICE_ACTION_PAUSE_RESUME)
+                }
+                context.startForegroundService(serviceIntent)
+            }
         }
     }
 
