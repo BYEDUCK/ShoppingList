@@ -41,7 +41,7 @@ class ShoppingListWidget : AppWidgetProvider() {
         val sharedPrefs =
             context?.getSharedPreferences(WIDGET_PREFS_NAME, MODE_PRIVATE) ?: return
         when {
-            intent.action.equals("com.byeduck.shoppinglist.widget.CHANGE_IMAGE") -> {
+            intent.action.equals(WIDGET_ACTION_CHANGE_IMAGE) -> {
                 val imgPrefId = getImgPrefId(widgetId)
                 val prevImgId = sharedPrefs.getInt(imgPrefId, 0)
                 val currentId = (prevImgId + 1) % widgetImages.size
@@ -51,21 +51,21 @@ class ShoppingListWidget : AppWidgetProvider() {
                     .putInt(imgPrefId, currentId)
                     .apply()
             }
-            intent.action.equals("com.byeduck.shoppinglist.widget.CHANGE_SONG") -> {
+            intent.action.equals(WIDGET_ACTION_CHANGE_SONG) -> {
                 val serviceIntent = Intent(context, SongService::class.java).apply {
                     putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
                     putExtra(EXTRA_SERVICE_ACTION, SERVICE_ACTION_CHANGE)
                 }
                 context.startForegroundService(serviceIntent)
             }
-            intent.action.equals("com.byeduck.shoppinglist.widget.START_STOP_SONG") -> {
+            intent.action.equals(WIDGET_ACTION_START_STOP_SONG) -> {
                 val serviceIntent = Intent(context, SongService::class.java).apply {
                     putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
                     putExtra(EXTRA_SERVICE_ACTION, SERVICE_ACTION_START_STOP)
                 }
                 context.startForegroundService(serviceIntent)
             }
-            intent.action.equals("com.byeduck.shoppinglist.widget.PAUSE_RESUME_SONG") -> {
+            intent.action.equals(WIDGET_ACTION_PAUSE_RESUME_SONG) -> {
                 val serviceIntent = Intent(context, SongService::class.java).apply {
                     putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
                     putExtra(EXTRA_SERVICE_ACTION, SERVICE_ACTION_PAUSE_RESUME)

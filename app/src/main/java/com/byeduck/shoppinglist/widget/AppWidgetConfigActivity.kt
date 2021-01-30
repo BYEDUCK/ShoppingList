@@ -53,7 +53,7 @@ class AppWidgetConfigActivity : AppCompatActivity() {
             "com.byeduck.shoppinglist.widget.ShoppingListWidget"
         )
         val changeImgBroadcast = Intent().apply {
-            action = "com.byeduck.shoppinglist.widget.CHANGE_IMAGE"
+            action = WIDGET_ACTION_CHANGE_IMAGE
             component = myComponent
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         }
@@ -64,7 +64,7 @@ class AppWidgetConfigActivity : AppCompatActivity() {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         val changeSongBroadcast = Intent().apply {
-            action = "com.byeduck.shoppinglist.widget.CHANGE_SONG"
+            action = WIDGET_ACTION_CHANGE_SONG
             component = myComponent
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         }
@@ -75,7 +75,7 @@ class AppWidgetConfigActivity : AppCompatActivity() {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         val startStopSongBroadcast = Intent().apply {
-            action = "com.byeduck.shoppinglist.widget.START_STOP_SONG"
+            action = WIDGET_ACTION_START_STOP_SONG
             component = myComponent
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         }
@@ -86,7 +86,7 @@ class AppWidgetConfigActivity : AppCompatActivity() {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         val pauseResumeSongBroadcast = Intent().apply {
-            action = "com.byeduck.shoppinglist.widget.PAUSE_RESUME_SONG"
+            action = WIDGET_ACTION_PAUSE_RESUME_SONG
             component = myComponent
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         }
