@@ -52,15 +52,38 @@ class FavouriteShopsRemoteViewsService : RemoteViewsService() {
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
+                if (snapshot.child("favourite").value == true) {
+                    val model = snapshot.getValue(ShopModel::class.java) ?: return
+                    val shop = ShopConverter.shopFromModel(model)
+                    if (shops.contains(shop)) {
+                        shops.remove(shop)
+                        shops.add(shop)
+                        shopsToView = shops.toArray(emptyArray())
+                        appWidgetManager.notifyAppWidgetViewDataChanged(
+                            widgetId,
+                            R.id.favouriteShopsList
+                        )
+                    }
+                }
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                TODO("Not yet implemented")
+                if (snapshot.child("favourite").value == true) {
+                    val model = snapshot.getValue(ShopModel::class.java) ?: return
+                    val shop = ShopConverter.shopFromModel(model)
+                    if (shops.contains(shop)) {
+                        shops.remove(shop)
+                        shopsToView = shops.toArray(emptyArray())
+                        appWidgetManager.notifyAppWidgetViewDataChanged(
+                            widgetId,
+                            R.id.favouriteShopsList
+                        )
+                    }
+                }
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
+                Log.d("DATASET", "CHILD MOVED")
             }
 
             override fun onCancelled(error: DatabaseError) {
