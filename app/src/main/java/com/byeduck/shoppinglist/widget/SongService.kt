@@ -7,7 +7,6 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.IBinder
 import android.widget.RemoteViews
-import android.widget.Toast
 import com.byeduck.shoppinglist.R
 
 class SongService : Service() {
@@ -65,8 +64,6 @@ class SongService : Service() {
     }
 
     override fun onDestroy() {
-        Toast.makeText(applicationContext, "DESTROOOOYEED!", Toast.LENGTH_LONG).show()
-        mediaPlayer?.stop()
     }
 
     private fun updateSongTitle(songId: Int, widgetId: Int) {
