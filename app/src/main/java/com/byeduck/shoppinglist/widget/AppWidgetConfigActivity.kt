@@ -12,6 +12,7 @@ import android.widget.RemoteViews
 import androidx.appcompat.app.AppCompatActivity
 import com.byeduck.shoppinglist.R
 import com.byeduck.shoppinglist.databinding.ActivityAppWidgetConfigBinding
+import com.byeduck.shoppinglist.shops.AddEditViewShopActivity
 
 class AppWidgetConfigActivity : AppCompatActivity() {
 
@@ -110,6 +111,15 @@ class AppWidgetConfigActivity : AppCompatActivity() {
                 // into the data so that the extras will not be ignored.
                 data = Uri.parse(this.toUri(Intent.URI_INTENT_SCHEME))
             }
+        )
+        remoteViews.setPendingIntentTemplate(
+            R.id.favouriteShopsList, PendingIntent.getActivity(
+                this, 0, Intent(this, AddEditViewShopActivity::class.java).apply {
+                    putExtra("view", true)
+                    data = Uri.parse(this.toUri(Intent.URI_INTENT_SCHEME))
+                },
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
         )
         appWidgetManager.updateAppWidget(widgetId, remoteViews)
 
