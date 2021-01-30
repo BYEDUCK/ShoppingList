@@ -10,17 +10,18 @@ import android.widget.RemoteViews
 import android.widget.Toast
 import com.byeduck.shoppinglist.R
 
-// TODO: try to replace with job scheduler
 class SongService : Service() {
-
-    private val widgetSongs = arrayOf(
-        Song(R.raw.song1, "Billy Jean"), Song(R.raw.song2, "Smooth Criminal")
-    )
 
     companion object {
         private var mediaPlayer: MediaPlayer? = null
+        val widgetSongs = arrayOf(
+            Song(R.raw.song1, "Billy Jean"), Song(R.raw.song2, "Smooth Criminal")
+        )
 
-        fun getMediaPlayer(context: Context, songId: Int) = MediaPlayer.create(context, songId)
+        fun getMediaPlayer(context: Context, songId: Int): MediaPlayer =
+            MediaPlayer.create(context, songId)
+
+        fun getSongPrefId(widgetId: Int) = "${widgetId}_SNG"
     }
 
     override fun onBind(intent: Intent): IBinder {
@@ -74,7 +75,5 @@ class SongService : Service() {
         remoteViews.setTextViewText(R.id.songTitleTxt, widgetSongs[songId].name)
         appWidgetManager.updateAppWidget(widgetId, remoteViews)
     }
-
-    private fun getSongPrefId(widgetId: Int) = "${widgetId}_SNG"
 
 }

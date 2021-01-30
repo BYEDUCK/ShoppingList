@@ -33,7 +33,7 @@ class AppWidgetConfigActivity : AppCompatActivity() {
             finish()
         }
         sharedPreferences = getSharedPreferences(WIDGET_PREFS_NAME, MODE_PRIVATE)
-        val url = sharedPreferences.getString(getUrlId(widgetId), "https://byeduck.com")
+        val url = sharedPreferences.getString(getUrlPrefId(widgetId), "https://byeduck.com")
         binding.urlTxt.setText(url)
     }
 
@@ -102,6 +102,7 @@ class AppWidgetConfigActivity : AppCompatActivity() {
         remoteViews.setOnClickPendingIntent(R.id.changeSongBtn, changeSongPendingIntent)
         remoteViews.setOnClickPendingIntent(R.id.startStopSongBtn, startStopSongPendingIntent)
         remoteViews.setOnClickPendingIntent(R.id.pauseResumeSongBtn, pauseResumePendingIntent)
+        remoteViews.setTextViewText(R.id.songTitleTxt, SongService.widgetSongs[0].name)
         remoteViews.setRemoteAdapter(
             R.id.favouriteShopsList,
             Intent(this, FavouriteShopsRemoteViewsService::class.java).apply {
@@ -124,7 +125,8 @@ class AppWidgetConfigActivity : AppCompatActivity() {
         appWidgetManager.updateAppWidget(widgetId, remoteViews)
 
         sharedPreferences.edit()
-            .putString(getUrlId(widgetId), url)
+            .putString(getUrlPrefId(widgetId), url)
+            .putInt(SongService.getSongPrefId(widgetId), 0)
             .apply()
         val resultValue = Intent().apply {
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
@@ -138,5 +140,5 @@ class AppWidgetConfigActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    private fun getUrlId(appWidgetId: Int) = "${appWidgetId}_URL"
+    private fun getUrlPrefId(appWidgetId: Int) = "${appWidgetId}_URL"
 }
