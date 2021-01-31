@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.byeduck.shoppinglist.databinding.ActivityAppWidgetConfigBinding
@@ -26,6 +27,7 @@ class AppWidgetConfigActivity : AppCompatActivity() {
         if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish()
         }
+        Log.d("CONFIG ACTIVITY", "widget id : $widgetId")
         sharedPreferences = getSharedPreferences(WIDGET_PREFS_NAME, MODE_PRIVATE)
         val url = sharedPreferences.getString(
             UpdateWidgetService.getUrlPrefId(widgetId),
@@ -42,8 +44,8 @@ class AppWidgetConfigActivity : AppCompatActivity() {
             .putInt(UpdateWidgetService.getImgPrefId(widgetId), 0)
             .apply()
 
-        val appWidgetManager = AppWidgetManager.getInstance(this)
-        val remoteViews = UpdateWidgetService.updateWidget(this, widgetId)
+        val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
+        val remoteViews = UpdateWidgetService.updateWidget(applicationContext, widgetId)
         appWidgetManager.updateAppWidget(widgetId, remoteViews)
         val resultValue = Intent().apply {
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)

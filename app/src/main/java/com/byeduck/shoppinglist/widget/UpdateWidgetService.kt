@@ -37,7 +37,7 @@ class UpdateWidgetService {
             intent.data = Uri.parse(url)
             val goToPagePendingIntent = PendingIntent.getActivity(
                 context,
-                0,
+                widgetId,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT
             )
 
@@ -48,9 +48,9 @@ class UpdateWidgetService {
             }
             val changeImgPendingIntent = PendingIntent.getBroadcast(
                 context,
-                1,
+                widgetId + 1,
                 changeImgBroadcast,
-                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_UPDATE_CURRENT
             )
             val changeSongBroadcast = Intent().apply {
                 action = WIDGET_ACTION_CHANGE_SONG
@@ -59,9 +59,9 @@ class UpdateWidgetService {
             }
             val changeSongPendingIntent = PendingIntent.getBroadcast(
                 context,
-                2,
+                widgetId + 2,
                 changeSongBroadcast,
-                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_UPDATE_CURRENT
             )
             val startStopSongBroadcast = Intent().apply {
                 action = WIDGET_ACTION_START_STOP_SONG
@@ -70,9 +70,9 @@ class UpdateWidgetService {
             }
             val startStopSongPendingIntent = PendingIntent.getBroadcast(
                 context,
-                3,
+                widgetId + 3,
                 startStopSongBroadcast,
-                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_UPDATE_CURRENT
             )
             val pauseResumeSongBroadcast = Intent().apply {
                 action = WIDGET_ACTION_PAUSE_RESUME_SONG
@@ -81,9 +81,9 @@ class UpdateWidgetService {
             }
             val pauseResumePendingIntent = PendingIntent.getBroadcast(
                 context,
-                4,
+                widgetId + 4,
                 pauseResumeSongBroadcast,
-                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_UPDATE_CURRENT
             )
 
             remoteViews.setOnClickPendingIntent(R.id.goToPageBtn, goToPagePendingIntent)
@@ -104,11 +104,13 @@ class UpdateWidgetService {
             )
             remoteViews.setPendingIntentTemplate(
                 R.id.favouriteShopsList, PendingIntent.getActivity(
-                    context, 5, Intent(context, AddEditViewShopActivity::class.java).apply {
+                    context,
+                    0,
+                    Intent(context, AddEditViewShopActivity::class.java).apply {
                         putExtra("view", true)
                         data = Uri.parse(this.toUri(Intent.URI_INTENT_SCHEME))
                     },
-                    PendingIntent.FLAG_IMMUTABLE
+                    PendingIntent.FLAG_UPDATE_CURRENT
                 )
             )
 

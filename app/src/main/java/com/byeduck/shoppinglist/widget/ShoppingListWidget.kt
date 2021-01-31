@@ -21,6 +21,7 @@ class ShoppingListWidget : AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         for (widgetId in appWidgetIds) {
+            Log.d("WIDGET UPDATE", "widget id : $widgetId")
             val remoteViews = UpdateWidgetService.updateWidget(context, widgetId)
             appWidgetManager.updateAppWidget(widgetId, remoteViews)
         }
@@ -33,11 +34,17 @@ class ShoppingListWidget : AppWidgetProvider() {
 
     override fun onDisabled(context: Context) {
         // Enter relevant functionality for when the last widget is disabled
+        val sharedPrefs = context.getSharedPreferences(WIDGET_PREFS_NAME, MODE_PRIVATE)
+        sharedPrefs.edit().clear().apply()
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
         val widgetId = intent?.extras?.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID) ?: return
+        if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+            return
+        }
+        Log.d("WIDGET RECEIVE", "widget id : $widgetId")
         val sharedPrefs =
             context?.getSharedPreferences(WIDGET_PREFS_NAME, MODE_PRIVATE) ?: return
         when {
