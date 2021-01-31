@@ -117,6 +117,7 @@ class FavouriteShopsRemoteViewsService : RemoteViewsService() {
                 context.getString(R.string.latitude_longitude, shop.latitude, shop.longitude)
             )
             remoteViews.setTextViewText(R.id.shopRadiusTxt, shop.radius.toString())
+            Log.d("ITEM", "SHOP ${shop.id}")
             val fillInIntent = Intent().apply {
                 putExtra("shopId", shop.id)
             }

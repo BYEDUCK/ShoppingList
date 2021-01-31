@@ -7,6 +7,7 @@ import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.util.Log
 import android.widget.RemoteViews
+import android.widget.Toast
 import com.byeduck.shoppinglist.R
 
 /**
@@ -14,16 +15,15 @@ import com.byeduck.shoppinglist.R
  */
 class ShoppingListWidget : AppWidgetProvider() {
 
-    private val widgetImages = arrayOf(
-        R.drawable.photo1, R.drawable.photo2, R.drawable.photo3
-    )
-
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        Log.d("ON", "UPDATE")
+        for (widgetId in appWidgetIds) {
+            val remoteViews = UpdateWidgetService.updateWidget(context, widgetId)
+            appWidgetManager.updateAppWidget(widgetId, remoteViews)
+        }
     }
 
     override fun onEnabled(context: Context) {
@@ -42,11 +42,17 @@ class ShoppingListWidget : AppWidgetProvider() {
             context?.getSharedPreferences(WIDGET_PREFS_NAME, MODE_PRIVATE) ?: return
         when {
             intent.action.equals(WIDGET_ACTION_CHANGE_IMAGE) -> {
-                val imgPrefId = getImgPrefId(widgetId)
+                Toast.makeText(context, "CHANGE IMG", Toast.LENGTH_SHORT).show()
+                val imgPrefId = UpdateWidgetService.getImgPrefId(widgetId)
                 val prevImgId = sharedPrefs.getInt(imgPrefId, 0)
-                val currentId = (prevImgId + 1) % widgetImages.size
+                val currentId = (prevImgId + 1) % UpdateWidgetService.widgetImages.size
                 val appWidgetManager = AppWidgetManager.getInstance(context)
-                updateAppWidgetImage(context, appWidgetManager, widgetId, widgetImages[currentId])
+                updateAppWidgetImage(
+                    context,
+                    appWidgetManager,
+                    widgetId,
+                    UpdateWidgetService.widgetImages[currentId]
+                )
                 sharedPrefs.edit()
                     .putInt(imgPrefId, currentId)
                     .apply()
@@ -74,8 +80,6 @@ class ShoppingListWidget : AppWidgetProvider() {
             }
         }
     }
-
-    private fun getImgPrefId(widgetId: Int) = "${widgetId}_IMG"
 }
 
 internal fun updateAppWidgetImage(

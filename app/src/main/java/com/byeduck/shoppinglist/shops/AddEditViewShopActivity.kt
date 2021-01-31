@@ -51,6 +51,16 @@ class AddEditViewShopActivity : AppCompatActivity() {
         val shopJson = intent?.getStringExtra("shop") ?: ""
         val shopId = intent?.getStringExtra("shopId") ?: ""
         viewOnly = intent?.getBooleanExtra("view", false) ?: false
+        if (viewOnly) {
+            binding.apply {
+                shopNameTxt.isEnabled = false
+                shopDescriptionTxt.isEnabled = false
+                shopRadiusTxt.isEnabled = false
+                isFavCheckbox.isEnabled = false
+                actionButtons.visibility = View.INVISIBLE
+                promoBtn.visibility = View.VISIBLE
+            }
+        }
         if (shopJson.isEmpty() && shopId.isEmpty()) {
             val latitude = intent?.getDoubleExtra("latitude", 0.0) ?: 0.0
             val longitude = intent?.getDoubleExtra("longitude", 0.0) ?: 0.0
@@ -140,16 +150,6 @@ class AddEditViewShopActivity : AppCompatActivity() {
             locationTxt.text =
                 getString(R.string.latitude_longitude, shop.latitude, shop.longitude)
             isFavCheckbox.isChecked = shop.isFavourite
-        }
-        if (viewOnly) {
-            binding.apply {
-                shopNameTxt.isEnabled = false
-                shopDescriptionTxt.isEnabled = false
-                shopRadiusTxt.isEnabled = false
-                isFavCheckbox.isEnabled = false
-                actionButtons.visibility = View.INVISIBLE
-                promoBtn.visibility = View.VISIBLE
-            }
         }
         displayMapFragment(shop.name)
     }
